@@ -10,8 +10,8 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Load the images
-left_facing_car_image = pygame.image.load("left-facing-car.png")
-background_image = pygame.image.load("background-image.png")
+left_facing_car_image = pygame.image.load("pygame-traffic-test/left-facing-car.png")
+background_image = pygame.image.load("pygame-traffic-test/background-image.png")
 
 # Object properties
 class Vehicle(object):
