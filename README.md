@@ -7,3 +7,15 @@
 
 ## Adapted IEEE Paper:
 [Modeling and Simulation of Vehicular Traffic at Intersection of Roads](https://ieeexplore.ieee.org/document/9509721)
+
+## Running the Pygame Traffic Test
+
+1. Make sure you have Python 3 and `pygame` installed:
+   ```sh
+   pip install pygame
+2. Navigate to the `pygame-traffic-test` directory:
+   ```sh
+   cd pygame-traffic-test
+3. Run the test:
+   ```sh
+   python3 main.py
