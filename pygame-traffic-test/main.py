@@ -11,11 +11,15 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Simulation constants
 ROAD_WIDTH = 160
+VEHICLE_WIDTH = 80
+VEHICLE_HEIGHT = 60
+TRAFFIC_SIGNAL_WIDTH = 80
+TRAFFIC_SIGNAL_HEIGHT = 106
 LANE_STARTING_POSITIONS = {
-    "vertical_road_left_lane": [SCREEN_WIDTH // 2 - 65, SCREEN_HEIGHT],
-    "vertical_road_right_lane": [SCREEN_WIDTH // 2 + 7, SCREEN_HEIGHT],
-    "horizontal_road_left_lane": [SCREEN_WIDTH, SCREEN_HEIGHT // 2 + 7],
-    "horizontal_road_right_lane": [SCREEN_WIDTH, SCREEN_HEIGHT // 2 - 65]
+    "vertical_road_left_lane": [(SCREEN_WIDTH // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
+    "vertical_road_right_lane": [SCREEN_WIDTH // 2 + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
+    "horizontal_road_left_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)],
+    "horizontal_road_right_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)]
 }
 
 # Load the images
@@ -33,9 +37,9 @@ signal_red_image = pygame.image.load("Graphics/SignalGraphics/signal-red.png")
 
 # Object properties
 class Vehicle(object):
-    def __init__(self, velocity, image, road_id, lane_id):
-        self.width = 80
-        self.height = 60
+    def __init__(self, width, height, velocity, image, road_id, lane_id):
+        self.width = width
+        self.height = height
         self.velocity = velocity
         self.image = image
         self.road_id = road_id
@@ -80,8 +84,8 @@ class TrafficSignal(object):
     def __init__(self, x, y, image):
         self.x = x
         self.y = y
-        self.width = 80
-        self.height = 106
+        self.width = TRAFFIC_SIGNAL_WIDTH
+        self.height = TRAFFIC_SIGNAL_HEIGHT
         self.image = image
 
     def draw(self, screen):
@@ -124,9 +128,9 @@ def spawnVehicle():
     lane_id = random.choice(["left_lane", "right_lane"])
 
     if road_id == "vertical_road":
-        return Vehicle(5, car_north_image, road_id, lane_id)
+        return Vehicle(VEHICLE_HEIGHT, VEHICLE_WIDTH, 5, car_north_image, road_id, lane_id)
     elif road_id == "horizontal_road":
-        return Vehicle(5, car_west_image, road_id, lane_id)
+        return Vehicle(VEHICLE_WIDTH, VEHICLE_HEIGHT, 5, car_west_image, road_id, lane_id)
 
 # Main simulation loop
 while running:
