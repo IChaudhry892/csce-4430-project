@@ -52,7 +52,7 @@ class Vehicle(object):
         screen.blit(self.image, (self.x, self.y))
 
     def is_off_screen(self):
-        return self.x < 0 or self.y < 0
+        return self.x < 0 - self.width or self.y < 0 - self.width
 
 class Road(object):
     def __init__(self, x, y, length, image):
