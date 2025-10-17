@@ -7,37 +7,52 @@ pygame.display.set_caption("Traffic Simulation Test")
 # Screen dimensions
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-ROAD_WIDTH = 160
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+# Simulation constants
+ROAD_WIDTH = 160
+LANE_STARTING_POSITIONS = {
+    "vertical_road_left_lane": [SCREEN_WIDTH // 2 - 65, SCREEN_HEIGHT],
+    "vertical_road_right_lane": [SCREEN_WIDTH // 2 + 7, SCREEN_HEIGHT],
+    "horizontal_road_left_lane": [SCREEN_WIDTH, SCREEN_HEIGHT // 2 + 7],
+    "horizontal_road_right_lane": [SCREEN_WIDTH, SCREEN_HEIGHT // 2 - 65]
+}
+
 # Load the images
-car_west_image = pygame.image.load("pygame-traffic-test/Graphics/VehicleGraphics/car-west.png")
-car_north_image = pygame.image.load("pygame-traffic-test/Graphics/VehicleGraphics/car-north.png")
-background_image = pygame.image.load("pygame-traffic-test/Graphics/BackgroundGraphic/background.png")
+car_west_image = pygame.image.load("Graphics/VehicleGraphics/car-west.png")
+car_north_image = pygame.image.load("Graphics/VehicleGraphics/car-north.png")
+background_image = pygame.image.load("Graphics/BackgroundGraphic/background.png")
 
-road_vertical_image = pygame.image.load("pygame-traffic-test/Graphics/RoadGraphics/road-vertical.png")
-road_horizontal_image = pygame.image.load("pygame-traffic-test/Graphics/RoadGraphics/road-horizontal.png")
-intersection_image = pygame.image.load("pygame-traffic-test/Graphics/IntersectionGraphic/intersection.png")
+road_vertical_image = pygame.image.load("Graphics/RoadGraphics/road-vertical.png")
+road_horizontal_image = pygame.image.load("Graphics/RoadGraphics/road-horizontal.png")
+intersection_image = pygame.image.load("Graphics/IntersectionGraphic/intersection.png")
 
-signal_green_image = pygame.image.load("pygame-traffic-test/Graphics/SignalGraphics/signal-green.png")
-signal_yellow_image = pygame.image.load("pygame-traffic-test/Graphics/SignalGraphics/signal-yellow.png")
-signal_red_image = pygame.image.load("pygame-traffic-test/Graphics/SignalGraphics/signal-red.png")
+signal_green_image = pygame.image.load("Graphics/SignalGraphics/signal-green.png")
+signal_yellow_image = pygame.image.load("Graphics/SignalGraphics/signal-yellow.png")
+signal_red_image = pygame.image.load("Graphics/SignalGraphics/signal-red.png")
 
 # Object properties
 class Vehicle(object):
-    def __init__(self, x, y, velocity, image):
-        self.x = x
-        self.y = y
+    def __init__(self, velocity, image, road_id, lane_id):
         self.width = 80
         self.height = 60
         self.velocity = velocity
         self.image = image
+        self.road_id = road_id
+        self.lane_id = lane_id
+        self.x, self.y = LANE_STARTING_POSITIONS[f"{road_id}_{lane_id}"]
 
     def move(self):
-        self.x += self.velocity
+        if self.road_id == "vertical_road":
+            self.y -= self.velocity
+        elif self.road_id == "horizontal_road":
+            self.x -= self.velocity
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
+
+    def is_off_screen(self):
+        return self.x < 0 or self.y < 0
 
 class Road(object):
     def __init__(self, x, y, length, image):
@@ -103,19 +118,27 @@ def redrawGameWindow():
 
     pygame.display.update()
 
+# Helper function to spawn a vehicle
+def spawnVehicle():
+    road_id = random.choice(["vertical_road", "horizontal_road"])
+    lane_id = random.choice(["left_lane", "right_lane"])
+
+    if road_id == "vertical_road":
+        return Vehicle(5, car_north_image, road_id, lane_id)
+    elif road_id == "horizontal_road":
+        return Vehicle(5, car_west_image, road_id, lane_id)
+
 # Main simulation loop
 while running:
     # Create vehicle object
     if random.randint(1, 60) == 1: # Object has a 1/60 change of spawning every frame
-        y_pos = SCREEN_HEIGHT // 2
-        vehicleVelocity = 5
-        vehicles.append(Vehicle(0, y_pos, vehicleVelocity, car_west_image))
+        vehicles.append(spawnVehicle())
 
     # Update the vehicles
     for vehicle in vehicles[:]:
         vehicle.move()
         # Remove object if it goes off screen
-        if vehicle.x > SCREEN_WIDTH:
+        if vehicle.is_off_screen():
             vehicles.remove(vehicle)
 
     # Event handler, pygame.Quit means user closed the game window
