@@ -13,6 +13,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 ROAD_WIDTH = 160
 VEHICLE_WIDTH = 80
 VEHICLE_HEIGHT = 60
+VEHICLE_VELOCITY = 40
 TRAFFIC_SIGNAL_WIDTH = 80
 TRAFFIC_SIGNAL_HEIGHT = 106
 LANE_STARTING_POSITIONS = {
@@ -21,6 +22,10 @@ LANE_STARTING_POSITIONS = {
     "horizontal_road_left_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)],
     "horizontal_road_right_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)]
 }
+SPEED_FACTOR = 3.0      # Simulation runs 3x faster than real time
+REAL_TIME = 0.0         # Real-time elapsed in seconds
+TIMER = 0.0             # Virtual time elapsed in seconds
+STOP_REAL_TIME = 30.0   # Stop simulation after 30 real-time seconds
 
 # Load the images
 car_west_image = pygame.image.load("Graphics/VehicleGraphics/car-west.png")
@@ -120,6 +125,13 @@ def redrawGameWindow():
     for vehicle in vehicles:
         vehicle.draw(screen)
 
+    # Display timer
+    font = pygame.font.SysFont(None, 36)
+    timer_text = font.render(f'Timer: {TIMER}', True, (255, 255, 255))
+    real_time_text = font.render(f'Real Time: {REAL_TIME}', True, (255, 255, 255))
+    screen.blit(timer_text, (10, 10))
+    screen.blit(real_time_text, (10, 40))
+
     pygame.display.update()
 
 # Helper function to spawn a vehicle
@@ -128,14 +140,17 @@ def spawnVehicle():
     lane_id = random.choice(["left_lane", "right_lane"])
 
     if road_id == "vertical_road":
-        return Vehicle(VEHICLE_HEIGHT, VEHICLE_WIDTH, 5, car_north_image, road_id, lane_id)
+        return Vehicle(VEHICLE_HEIGHT, VEHICLE_WIDTH, VEHICLE_VELOCITY, car_north_image, road_id, lane_id)
     elif road_id == "horizontal_road":
-        return Vehicle(VEHICLE_WIDTH, VEHICLE_HEIGHT, 5, car_west_image, road_id, lane_id)
+        return Vehicle(VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_VELOCITY, car_west_image, road_id, lane_id)
 
 # Main simulation loop
 while running:
+    if REAL_TIME == STOP_REAL_TIME:
+        break
+
     # Create vehicle object
-    if random.randint(1, 60) == 1: # Object has a 1/60 change of spawning every frame
+    if random.randint(1, 20) == 1: # Object has a 1/60 change of spawning every frame
         vehicles.append(spawnVehicle())
 
     # Update the vehicles
@@ -152,6 +167,9 @@ while running:
 
     # pygame.display.update()
     redrawGameWindow()
-    clock.tick(60)
+    real_time_per_frame = clock.tick(20) / 1000 # 20 fps
+    REAL_TIME += real_time_per_frame
+    TIMER += real_time_per_frame * SPEED_FACTOR
+    print(real_time_per_frame)
 
 pygame.quit()
