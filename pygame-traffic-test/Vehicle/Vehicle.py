@@ -25,4 +25,5 @@ class Vehicle(Animatable, Simulatable):
         return self.x < 0 - self.width or self.y < 0 - self.width
     
     def simulate(self):
-        pass
+        # All a vehicle does is move right now
+        self.move()

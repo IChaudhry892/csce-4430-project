@@ -5,18 +5,32 @@ class SimulationGraphicConfig:
     SCREEN_WIDTH = 1280
     SCREEN_HEIGHT = 720
 
-    # Simulatable Object Images
-    car_west_image = pygame.image.load("Graphics/VehicleGraphics/car-west.png")
-    car_north_image = pygame.image.load("Graphics/VehicleGraphics/car-north.png")
-    background_image = pygame.image.load("Graphics/BackgroundGraphic/background.png")
+    # Asset paths (as strings)
+    CAR_WEST_PATH = "Graphics/VehicleGraphics/car-west.png"
+    CAR_NORTH_PATH = "Graphics/VehicleGraphics/car-north.png"
+    BACKGROUND_PATH = "Graphics/BackgroundGraphic/background.png"
 
-    road_vertical_image = pygame.image.load("Graphics/RoadGraphics/road-vertical.png")
-    road_horizontal_image = pygame.image.load("Graphics/RoadGraphics/road-horizontal.png")
-    intersection_image = pygame.image.load("Graphics/IntersectionGraphic/intersection.png")
+    ROAD_VERTICAL_PATH = "Graphics/RoadGraphics/road-vertical.png"
+    ROAD_HORIZONTAL_PATH = "Graphics/RoadGraphics/road-horizontal.png"
+    INTERSECTION_PATH = "Graphics/IntersectionGraphic/intersection.png"
 
-    signal_green_image = pygame.image.load("Graphics/SignalGraphics/signal-green.png")
-    signal_yellow_image = pygame.image.load("Graphics/SignalGraphics/signal-yellow.png")
-    signal_red_image = pygame.image.load("Graphics/SignalGraphics/signal-red.png")
+    SIGNAL_GREEN_PATH = "Graphics/SignalGraphics/signal-green.png"
+    SIGNAL_YELLOW_PATH = "Graphics/SignalGraphics/signal-yellow.png"
+    SIGNAL_RED_PATH = "Graphics/SignalGraphics/signal-red.png"
+
+    def load_images():
+        """Load all images used in the simulation"""
+        images = {}
+        images["car_west"] = pygame.image.load(SimulationGraphicConfig.CAR_WEST_PATH)
+        images["car_north"] = pygame.image.load(SimulationGraphicConfig.CAR_NORTH_PATH)
+        images["background"] = pygame.image.load(SimulationGraphicConfig.BACKGROUND_PATH)
+        images["road_vertical"] = pygame.image.load(SimulationGraphicConfig.ROAD_VERTICAL_PATH)
+        images["road_horizontal"] = pygame.image.load(SimulationGraphicConfig.ROAD_HORIZONTAL_PATH)
+        images["intersection"] = pygame.image.load(SimulationGraphicConfig.INTERSECTION_PATH)
+        images["signal_green"] = pygame.image.load(SimulationGraphicConfig.SIGNAL_GREEN_PATH)
+        images["signal_yellow"] = pygame.image.load(SimulationGraphicConfig.SIGNAL_YELLOW_PATH)
+        images["signal_red"] = pygame.image.load(SimulationGraphicConfig.SIGNAL_RED_PATH)
+        return images
 
     # Road Constants
     ROAD_WIDTH = 160
@@ -26,7 +40,7 @@ class SimulationGraphicConfig:
     # Vehicle Constants
     VEHICLE_WIDTH = 80
     VEHICLE_HEIGHT = 60
-    VEHICLE_VELOCITY = 40 # THIS BELONGS IN ANOTHER FILE
+    # VEHICLE_VELOCITY = 40 # THIS BELONGS IN ANOTHER FILE
     LANE_STARTING_POSITIONS = {
         "vertical_road_left_lane": [(SCREEN_WIDTH // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
         "vertical_road_right_lane": [SCREEN_WIDTH // 2 + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
