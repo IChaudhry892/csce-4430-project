@@ -1,5 +1,8 @@
 from Graphics.SimulationGraphicConfig import SimulationGraphicConfig
 from Vehicle.Vehicle import Vehicle
+from Road.Road import Road
+from Intersection.Intersection import Intersection
+from TrafficSignal.TrafficSignal import TrafficSignal
 
 import pygame
 import random
@@ -7,107 +10,14 @@ import random
 pygame.init()
 pygame.display.set_caption("Traffic Simulation Test")
 
-# Screen dimensions
-# SCREEN_WIDTH = 1280
-# SCREEN_HEIGHT = 720
 screen = pygame.display.set_mode((SimulationGraphicConfig.SCREEN_WIDTH, SimulationGraphicConfig.SCREEN_HEIGHT))
-
-# Simulation constants
-# ROAD_WIDTH = 160
-# ROAD_VERTICAL_LENGTH = SCREEN_HEIGHT
-# ROAD_HORIZONTAL_LENGTH = SCREEN_WIDTH
-
-# VEHICLE_WIDTH = 80
-# VEHICLE_HEIGHT = 60
-# VEHICLE_VELOCITY = 40
-
-# TRAFFIC_SIGNAL_WIDTH = 80
-# TRAFFIC_SIGNAL_HEIGHT = 106
-# SIGNAL_ROAD_VERTICAL_X_POS = 730
-# SIGNAL_ROAD_VERTICAL_Y_POS = 168
-# SIGNAL_ROAD_HORIZONTAL_X_POS = 472
-# SIGNAL_ROAD_HORIZONTAL_Y_POS = 448
-
-# LANE_STARTING_POSITIONS = {
-#     "vertical_road_left_lane": [(SCREEN_WIDTH // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
-#     "vertical_road_right_lane": [SCREEN_WIDTH // 2 + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
-#     "horizontal_road_left_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)],
-#     "horizontal_road_right_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)]
-# }
 
 SPEED_FACTOR = 3.0      # Simulation runs 3x faster than real time
 REAL_TIME = 0.0         # Real-time elapsed in seconds
 TIMER = 0.0             # Virtual time elapsed in seconds
 STOP_REAL_TIME = 30.0   # Stop simulation after 30 real-time seconds
 
-# Load the images
-# car_west_image = pygame.image.load("Graphics/VehicleGraphics/car-west.png")
-# car_north_image = pygame.image.load("Graphics/VehicleGraphics/car-north.png")
-# background_image = pygame.image.load("Graphics/BackgroundGraphic/background.png")
-
-# road_vertical_image = pygame.image.load("Graphics/RoadGraphics/road-vertical.png")
-# road_horizontal_image = pygame.image.load("Graphics/RoadGraphics/road-horizontal.png")
-# intersection_image = pygame.image.load("Graphics/IntersectionGraphic/intersection.png")
-
-# signal_green_image = pygame.image.load("Graphics/SignalGraphics/signal-green.png")
-# signal_yellow_image = pygame.image.load("Graphics/SignalGraphics/signal-yellow.png")
-# signal_red_image = pygame.image.load("Graphics/SignalGraphics/signal-red.png")
-
-# Object properties
-# class Vehicle:
-#     def __init__(self, width, height, velocity, image, road_id, lane_id):
-#         self.width = width
-#         self.height = height
-#         self.velocity = velocity
-#         self.image = image
-#         self.road_id = road_id
-#         self.lane_id = lane_id
-#         self.x, self.y = LANE_STARTING_POSITIONS[f"{road_id}_{lane_id}"]
-
-#     def move(self):
-#         if self.road_id == "vertical_road":
-#             self.y -= self.velocity
-#         elif self.road_id == "horizontal_road":
-#             self.x -= self.velocity
-
-#     def draw(self, screen):
-#         screen.blit(self.image, (self.x, self.y))
-
-#     def is_off_screen(self):
-#         return self.x < 0 - self.width or self.y < 0 - self.width
-
-class Road:
-    def __init__(self, x, y, length, image):
-        self.x = x
-        self.y = y
-        self.width = SimulationGraphicConfig.ROAD_WIDTH
-        self.length = length
-        self.image = image
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
-
-class Intersection:
-    def __init__(self, x, y, image):
-        self.x = x
-        self.y = y
-        self.width = SimulationGraphicConfig.ROAD_WIDTH
-        self.height = SimulationGraphicConfig.ROAD_WIDTH
-        self.image = image
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
-
-class TrafficSignal:
-    def __init__(self, x, y, image):
-        self.x = x
-        self.y = y
-        self.width = SimulationGraphicConfig.TRAFFIC_SIGNAL_WIDTH
-        self.height = SimulationGraphicConfig.TRAFFIC_SIGNAL_HEIGHT
-        self.image = image
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+# Object properties -> MOVED TO SEPARATE CLASS FILES
 
 # Simulation variables
 vehicles = []
