@@ -1,3 +1,6 @@
+from Graphics.SimulationGraphicConfig import SimulationGraphicConfig
+from Vehicle.Vehicle import Vehicle
+
 import pygame
 import random
 
@@ -5,92 +8,102 @@ pygame.init()
 pygame.display.set_caption("Traffic Simulation Test")
 
 # Screen dimensions
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# SCREEN_WIDTH = 1280
+# SCREEN_HEIGHT = 720
+screen = pygame.display.set_mode((SimulationGraphicConfig.SCREEN_WIDTH, SimulationGraphicConfig.SCREEN_HEIGHT))
 
 # Simulation constants
-ROAD_WIDTH = 160
-VEHICLE_WIDTH = 80
-VEHICLE_HEIGHT = 60
-VEHICLE_VELOCITY = 40
-TRAFFIC_SIGNAL_WIDTH = 80
-TRAFFIC_SIGNAL_HEIGHT = 106
-LANE_STARTING_POSITIONS = {
-    "vertical_road_left_lane": [(SCREEN_WIDTH // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
-    "vertical_road_right_lane": [SCREEN_WIDTH // 2 + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
-    "horizontal_road_left_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)],
-    "horizontal_road_right_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)]
-}
+# ROAD_WIDTH = 160
+# ROAD_VERTICAL_LENGTH = SCREEN_HEIGHT
+# ROAD_HORIZONTAL_LENGTH = SCREEN_WIDTH
+
+# VEHICLE_WIDTH = 80
+# VEHICLE_HEIGHT = 60
+# VEHICLE_VELOCITY = 40
+
+# TRAFFIC_SIGNAL_WIDTH = 80
+# TRAFFIC_SIGNAL_HEIGHT = 106
+# SIGNAL_ROAD_VERTICAL_X_POS = 730
+# SIGNAL_ROAD_VERTICAL_Y_POS = 168
+# SIGNAL_ROAD_HORIZONTAL_X_POS = 472
+# SIGNAL_ROAD_HORIZONTAL_Y_POS = 448
+
+# LANE_STARTING_POSITIONS = {
+#     "vertical_road_left_lane": [(SCREEN_WIDTH // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
+#     "vertical_road_right_lane": [SCREEN_WIDTH // 2 + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
+#     "horizontal_road_left_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)],
+#     "horizontal_road_right_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)]
+# }
+
 SPEED_FACTOR = 3.0      # Simulation runs 3x faster than real time
 REAL_TIME = 0.0         # Real-time elapsed in seconds
 TIMER = 0.0             # Virtual time elapsed in seconds
 STOP_REAL_TIME = 30.0   # Stop simulation after 30 real-time seconds
 
 # Load the images
-car_west_image = pygame.image.load("Graphics/VehicleGraphics/car-west.png")
-car_north_image = pygame.image.load("Graphics/VehicleGraphics/car-north.png")
-background_image = pygame.image.load("Graphics/BackgroundGraphic/background.png")
+# car_west_image = pygame.image.load("Graphics/VehicleGraphics/car-west.png")
+# car_north_image = pygame.image.load("Graphics/VehicleGraphics/car-north.png")
+# background_image = pygame.image.load("Graphics/BackgroundGraphic/background.png")
 
-road_vertical_image = pygame.image.load("Graphics/RoadGraphics/road-vertical.png")
-road_horizontal_image = pygame.image.load("Graphics/RoadGraphics/road-horizontal.png")
-intersection_image = pygame.image.load("Graphics/IntersectionGraphic/intersection.png")
+# road_vertical_image = pygame.image.load("Graphics/RoadGraphics/road-vertical.png")
+# road_horizontal_image = pygame.image.load("Graphics/RoadGraphics/road-horizontal.png")
+# intersection_image = pygame.image.load("Graphics/IntersectionGraphic/intersection.png")
 
-signal_green_image = pygame.image.load("Graphics/SignalGraphics/signal-green.png")
-signal_yellow_image = pygame.image.load("Graphics/SignalGraphics/signal-yellow.png")
-signal_red_image = pygame.image.load("Graphics/SignalGraphics/signal-red.png")
+# signal_green_image = pygame.image.load("Graphics/SignalGraphics/signal-green.png")
+# signal_yellow_image = pygame.image.load("Graphics/SignalGraphics/signal-yellow.png")
+# signal_red_image = pygame.image.load("Graphics/SignalGraphics/signal-red.png")
 
 # Object properties
-class Vehicle(object):
-    def __init__(self, width, height, velocity, image, road_id, lane_id):
-        self.width = width
-        self.height = height
-        self.velocity = velocity
-        self.image = image
-        self.road_id = road_id
-        self.lane_id = lane_id
-        self.x, self.y = LANE_STARTING_POSITIONS[f"{road_id}_{lane_id}"]
+# class Vehicle:
+#     def __init__(self, width, height, velocity, image, road_id, lane_id):
+#         self.width = width
+#         self.height = height
+#         self.velocity = velocity
+#         self.image = image
+#         self.road_id = road_id
+#         self.lane_id = lane_id
+#         self.x, self.y = LANE_STARTING_POSITIONS[f"{road_id}_{lane_id}"]
 
-    def move(self):
-        if self.road_id == "vertical_road":
-            self.y -= self.velocity
-        elif self.road_id == "horizontal_road":
-            self.x -= self.velocity
+#     def move(self):
+#         if self.road_id == "vertical_road":
+#             self.y -= self.velocity
+#         elif self.road_id == "horizontal_road":
+#             self.x -= self.velocity
 
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+#     def draw(self, screen):
+#         screen.blit(self.image, (self.x, self.y))
 
-    def is_off_screen(self):
-        return self.x < 0 - self.width or self.y < 0 - self.width
+#     def is_off_screen(self):
+#         return self.x < 0 - self.width or self.y < 0 - self.width
 
-class Road(object):
+class Road:
     def __init__(self, x, y, length, image):
         self.x = x
         self.y = y
-        self.width = ROAD_WIDTH
+        self.width = SimulationGraphicConfig.ROAD_WIDTH
         self.length = length
         self.image = image
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
-class Intersection(object):
+class Intersection:
     def __init__(self, x, y, image):
         self.x = x
         self.y = y
-        self.width = ROAD_WIDTH
-        self.height = ROAD_WIDTH
+        self.width = SimulationGraphicConfig.ROAD_WIDTH
+        self.height = SimulationGraphicConfig.ROAD_WIDTH
         self.image = image
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
-class TrafficSignal(object):
+class TrafficSignal:
     def __init__(self, x, y, image):
         self.x = x
         self.y = y
-        self.width = TRAFFIC_SIGNAL_WIDTH
-        self.height = TRAFFIC_SIGNAL_HEIGHT
+        self.width = SimulationGraphicConfig.TRAFFIC_SIGNAL_WIDTH
+        self.height = SimulationGraphicConfig.TRAFFIC_SIGNAL_HEIGHT
         self.image = image
 
     def draw(self, screen):
@@ -101,11 +114,11 @@ vehicles = []
 simulation_over = False
 running = True
 clock = pygame.time.Clock()
-ROAD_VERTICAL = Road(0, 0, SCREEN_HEIGHT, road_vertical_image)
-ROAD_HORIZONAL = Road(0, 0, SCREEN_WIDTH, road_horizontal_image)
-INTERSECTION = Intersection(0, 0, intersection_image)
-SIGNAL_ROAD_VERTICAL = TrafficSignal(730, 168, signal_red_image)
-SIGNAL_ROAD_HORIZONTAL = TrafficSignal(472, 448, signal_green_image)
+ROAD_VERTICAL = Road(0, 0, SimulationGraphicConfig.ROAD_VERTICAL_LENGTH, SimulationGraphicConfig.road_vertical_image)
+ROAD_HORIZONAL = Road(0, 0, SimulationGraphicConfig.ROAD_HORIZONTAL_LENGTH, SimulationGraphicConfig.road_horizontal_image)
+INTERSECTION = Intersection(0, 0, SimulationGraphicConfig.intersection_image)
+SIGNAL_ROAD_VERTICAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_Y_POS, SimulationGraphicConfig.signal_red_image)
+SIGNAL_ROAD_HORIZONTAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_Y_POS, SimulationGraphicConfig.signal_green_image)
 
 # Reset the simulation to play again if simulation_over is true
 def resetSimulation():
@@ -116,7 +129,7 @@ def resetSimulation():
 
 # Draw the background image and all the vehicles
 def redrawGameWindow():
-    screen.blit(background_image, (0,0))
+    screen.blit(SimulationGraphicConfig.background_image, (0,0))
     ROAD_VERTICAL.draw(screen)
     ROAD_HORIZONAL.draw(screen)
     INTERSECTION.draw(screen)
@@ -140,9 +153,9 @@ def spawnVehicle():
     lane_id = random.choice(["left_lane", "right_lane"])
 
     if road_id == "vertical_road":
-        return Vehicle(VEHICLE_HEIGHT, VEHICLE_WIDTH, VEHICLE_VELOCITY, car_north_image, road_id, lane_id)
+        return Vehicle(SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationGraphicConfig.VEHICLE_WIDTH, SimulationGraphicConfig.VEHICLE_VELOCITY, SimulationGraphicConfig.car_north_image, road_id, lane_id)
     elif road_id == "horizontal_road":
-        return Vehicle(VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_VELOCITY, car_west_image, road_id, lane_id)
+        return Vehicle(SimulationGraphicConfig.VEHICLE_WIDTH, SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationGraphicConfig.VEHICLE_VELOCITY, SimulationGraphicConfig.car_west_image, road_id, lane_id)
 
 # Main simulation loop
 while running:
