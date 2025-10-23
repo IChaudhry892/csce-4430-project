@@ -31,6 +31,12 @@ class ScenarioHandler:
         animatables = self.scenario.getAnimatables()
         for animatable in animatables:
             animatable.draw(screen)
+
+    def drawSimulatables(self, screen) -> None:
+        """Draw all simulatable components in the scenario""" # copied from paper's code, idk where to use it
+        simulatables = self.scenario.getSimulatables()
+        for simulatable in simulatables:
+            simulatable.draw(screen)
     
     def isTerminated(self) -> bool:
         """Check if the simulation scenario is terminated"""
@@ -65,7 +71,7 @@ class ScenarioHandler:
                     self.scenario.removeComponent(simulatable)
 
             # Redraw the simulation window
-            self.display.redrawSimulationWindow(self.scenario, self.timer, self.real_time)
+            self.display.redrawSimulationWindow(self, self.timer, self.real_time)
 
     def cleanup(self) -> None:
         """Cleanup resources used by the scenario handler"""
