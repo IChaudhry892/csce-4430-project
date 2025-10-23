@@ -44,7 +44,8 @@ class ScenarioHandler:
             # Timing control
             real_time_per_frame = self.clock.tick(self.fps) / 1000.0
             self.real_time += real_time_per_frame
-            self.timer += real_time_per_frame * self.speed_factor
+            virtual_time_per_frame = real_time_per_frame * self.speed_factor
+            self.timer += virtual_time_per_frame
             if self.real_time >= self.stop_real_time:
                 self.running = False
 
@@ -59,7 +60,7 @@ class ScenarioHandler:
 
             # Update simulatable components (just vehicles for now)
             for simulatable in self.scenario.getSimulatables()[:]:
-                simulatable.simulate()
+                simulatable.simulate(virtual_time_per_frame)
                 if simulatable.is_off_screen():
                     self.scenario.removeComponent(simulatable)
 

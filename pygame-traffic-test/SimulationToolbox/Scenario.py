@@ -26,10 +26,10 @@ class Scenario:
         lane_id = random.choice(["left_lane", "right_lane"])
         if road_id == "vertical_road":
             img = self.images['car_north']
-            self.addComponent(Vehicle(SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationGraphicConfig.VEHICLE_WIDTH, SimulationConfig.VEHICLE_VELOCITY, img, road_id, lane_id))
+            self.addComponent(Vehicle(SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationGraphicConfig.VEHICLE_WIDTH, SimulationConfig.VEHICLE_VELOCITY_MPS, img, road_id, lane_id))
         else:
             img = self.images['car_west']
-            self.addComponent(Vehicle(SimulationGraphicConfig.VEHICLE_WIDTH, SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationConfig.VEHICLE_VELOCITY, img, road_id, lane_id))
+            self.addComponent(Vehicle(SimulationGraphicConfig.VEHICLE_WIDTH, SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationConfig.VEHICLE_VELOCITY_MPS, img, road_id, lane_id))
     
     def buildScenario(self):
         """Abstract method to be implemented by subclass (probably Main)""" # nvm, using it in scnearioHandler right now
