@@ -16,11 +16,17 @@ class Scenario:
         self.animatables = []    # List of animatable objects
         self.components = []     # List of objects
         self.intersection = None # Intersection object
-        
-        # FOR TESTING PURPOSES
-        self.images = images
+        self.images = images    # Images dictionary for loading graphics
 
-    # FOR TESTING PURPOSES
+        # FOR TESTING: Track how many vehicles spawned per lane (keys: "vertical_road_left_lane", etc.)
+        self.spawn_counts = {
+            "vertical_road_left_lane": 0,
+            "vertical_road_right_lane": 0,
+            "horizontal_road_left_lane": 0,
+            "horizontal_road_right_lane": 0
+        }
+
+    # Spawn vehicle for a given road based on its ID
     def spawn_vehicle_for_road(self, road_id):
         lane_id = random.choice(["left_lane", "right_lane"])
         if road_id == SimulationConfig.ROAD_IDS["Vertical Road"]:
@@ -29,6 +35,11 @@ class Scenario:
         elif road_id == SimulationConfig.ROAD_IDS["Horizontal Road"]:
             img = self.images['car_west']
             self.addComponent(Vehicle(SimulationGraphicConfig.VEHICLE_WIDTH, SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationConfig.VEHICLE_VELOCITY_MPS, img, road_id, lane_id))
+
+        # FOR TESTING: Update and print spawn counts
+        lane_key = f"{road_id}_{lane_id}"
+        self.spawn_counts[lane_key] = self.spawn_counts.get(lane_key, 0) + 1
+        print(f"Spawned vehicle in {lane_key}: total={self.spawn_counts[lane_key]}")
     
     def buildScenario(self):
         """Abstract method to be implemented by subclass (probably Main)""" # nvm, using it in scnearioHandler right now
