@@ -27,13 +27,13 @@ class ScenarioHandler:
         pass
 
     def drawAnimatables(self, screen) -> None:
-        """Draw all animatable components in the scenario""" # copied from paper's code, idk where to use it
+        """Draw all animatable components in the scenario""" # Called in Display.redrawSimulationWindow
         animatables = self.scenario.getAnimatables()
         for animatable in animatables:
             animatable.draw(screen)
 
     def drawSimulatables(self, screen) -> None:
-        """Draw all simulatable components in the scenario""" # copied from paper's code, idk where to use it
+        """Draw all simulatable components in the scenario""" # Called in Display.redrawSimulationWindow
         simulatables = self.scenario.getSimulatables()
         for simulatable in simulatables:
             simulatable.draw(screen)
@@ -60,9 +60,11 @@ class ScenarioHandler:
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            # Spawn vehicles randomly for testing
-            if random.randint(1, 20) == 1: # Object has a 1/20 chance of spawning every frame
-                self.scenario.spawn_vehicle()
+            # Spawn vehicles based on traffic intensity for each road
+            for road in self.scenario.getComponents():
+                if isinstance(road, Road):
+                    if random.random() < road.getTrafficIntensity():
+                        self.scenario.spawn_vehicle_for_road(road.getRoadID())
 
             # Update simulatable components (just vehicles for now)
             for simulatable in self.scenario.getSimulatables()[:]:

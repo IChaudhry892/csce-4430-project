@@ -21,22 +21,21 @@ class Scenario:
         self.images = images
 
     # FOR TESTING PURPOSES
-    def spawn_vehicle(self):
-        road_id = random.choice(["vertical_road", "horizontal_road"])
+    def spawn_vehicle_for_road(self, road_id):
         lane_id = random.choice(["left_lane", "right_lane"])
-        if road_id == "vertical_road":
+        if road_id == SimulationConfig.ROAD_IDS["Vertical Road"]:
             img = self.images['car_north']
             self.addComponent(Vehicle(SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationGraphicConfig.VEHICLE_WIDTH, SimulationConfig.VEHICLE_VELOCITY_MPS, img, road_id, lane_id))
-        else:
+        elif road_id == SimulationConfig.ROAD_IDS["Horizontal Road"]:
             img = self.images['car_west']
             self.addComponent(Vehicle(SimulationGraphicConfig.VEHICLE_WIDTH, SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationConfig.VEHICLE_VELOCITY_MPS, img, road_id, lane_id))
     
     def buildScenario(self):
         """Abstract method to be implemented by subclass (probably Main)""" # nvm, using it in scnearioHandler right now
         # PLACEHOLDER CODE FOR TESTING
-        ROAD_VERTICAL = Road(0, 0, SimulationGraphicConfig.ROAD_VERTICAL_LENGTH, self.images['road_vertical'])
+        ROAD_VERTICAL = Road(0, 0, SimulationGraphicConfig.ROAD_VERTICAL_LENGTH, SimulationConfig.TRAFFIC_INTENSITIES["high"], SimulationConfig.ROAD_IDS["Vertical Road"], self.images['road_vertical'])
         self.addComponent(ROAD_VERTICAL)
-        ROAD_HORIZONAL = Road(0, 0, SimulationGraphicConfig.ROAD_HORIZONTAL_LENGTH, self.images['road_horizontal'])
+        ROAD_HORIZONAL = Road(0, 0, SimulationGraphicConfig.ROAD_HORIZONTAL_LENGTH, SimulationConfig.TRAFFIC_INTENSITIES["low"], SimulationConfig.ROAD_IDS["Horizontal Road"], self.images['road_horizontal'])
         self.addComponent(ROAD_HORIZONAL)
         INTERSECTION = Intersection(0, 0, self.images['intersection'])
         self.addComponent(INTERSECTION)
