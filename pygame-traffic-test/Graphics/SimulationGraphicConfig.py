@@ -40,7 +40,6 @@ class SimulationGraphicConfig:
     # Vehicle Constants
     VEHICLE_WIDTH = 80
     VEHICLE_HEIGHT = 60
-    # VEHICLE_VELOCITY = 40 # THIS BELONGS IN ANOTHER FILE
     LANE_STARTING_POSITIONS = {
         "vertical_road_left_lane": [(SCREEN_WIDTH // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
         "vertical_road_right_lane": [SCREEN_WIDTH // 2 + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],

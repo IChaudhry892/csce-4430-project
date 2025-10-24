@@ -13,7 +13,6 @@ class ScenarioHandler:
 
     def __init__(self, scenario: Scenario, display):
         self.scenario = scenario
-        # FOR TESTING PURPOSES
         self.display = display
         self.fps = SimulationConfig.FPS
         self.clock = pygame.time.Clock()
@@ -45,7 +44,7 @@ class ScenarioHandler:
     def runSimulation(self) -> None:
         """Run the simulation scenario"""
         self.scenario.buildScenario()
-        # FOR TESTING PURPOSES
+
         while self.running:
             # Timing control
             real_time_per_frame = self.clock.tick(self.fps) / 1000.0
@@ -64,7 +63,13 @@ class ScenarioHandler:
             for road in self.scenario.getComponents():
                 if isinstance(road, Road):
                     if random.random() < road.getTrafficIntensity():
-                        self.scenario.spawn_vehicle_for_road(road.getRoadID())
+                        vehicle = road.create_vehicle(self.scenario.images)
+                        self.scenario.addComponent(vehicle)
+
+                        # FOR TESTING: Update and print spawn counts
+                        lane_key = f"{road.getRoadID()}_{vehicle.lane_id}"
+                        self.scenario.spawn_counts[lane_key] += 1
+                        print(f"Spawned vehicle in {lane_key}: total={self.scenario.spawn_counts[lane_key]}")
 
             # Update simulatable components (just vehicles for now)
             for simulatable in self.scenario.getSimulatables()[:]:
