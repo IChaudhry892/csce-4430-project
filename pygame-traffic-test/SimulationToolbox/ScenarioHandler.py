@@ -65,14 +65,23 @@ class ScenarioHandler:
             self.timer += virtual_time_per_frame
 
             # Spawn vehicles based on traffic intensity for each road
-            for road in self.scenario.getComponents():
-                if isinstance(road, Road) and random.random() < road.getTrafficIntensity() and road.can_spawn_vehicle(self.scenario):
-                        vehicle = road.create_vehicle(self.scenario.images)
-                        self.scenario.register_vehicle(vehicle)
+            # for road in self.scenario.getComponents():
+            #     if isinstance(road, Road) and random.random() < road.getTrafficIntensity() and road.can_spawn_vehicle(self.scenario):
+            #             vehicle = road.create_vehicle(self.scenario.images)
+            #             self.scenario.register_vehicle(vehicle)
 
-                        # FOR TESTING: Update and print spawn counts
-                        lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
-                        print(f"Spawned vehicle in {lane_key}: total={self.scenario.spawn_counts[lane_key]}")
+            #             # FOR TESTING: Update and print spawn counts
+            #             lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
+            #             print(f"Spawned vehicle in {lane_key}: total={self.scenario.spawn_counts[lane_key]}")
+
+            for road in self.scenario.getComponents():
+                if isinstance(road, Road) and random.random() < road.getTrafficIntensity():
+                        spawned = road.try_spawn_vehicle_in_lane(self.scenario, self.display.screen)
+                        # if spawned: vehicle = spawned
+
+                        # # FOR TESTING: Update and print spawn counts
+                        # lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
+                        # print(f"Spawned vehicle in {lane_key}: total={self.scenario.spawn_counts[lane_key]}")
 
             # Update simulatable components (just vehicles for now)
             for simulatable in self.scenario.getSimulatables()[:]:

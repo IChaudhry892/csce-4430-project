@@ -19,12 +19,12 @@ class Scenario:
         self.images = images    # Images dictionary for loading graphics
 
         # Lists for tracking vehicles in each lane
-        self.vehicle_lanes = {
-            "vertical_road_left_lane": [],
-            "vertical_road_right_lane": [],
-            "horizontal_road_left_lane": [],
-            "horizontal_road_right_lane": []
-        }
+        # self.vehicle_lanes = {
+        #     "vertical_road_left_lane": [],
+        #     "vertical_road_right_lane": [],
+        #     "horizontal_road_left_lane": [],
+        #     "horizontal_road_right_lane": []
+        # }
 
         # FOR TESTING: Track how many vehicles spawned per lane (keys: "vertical_road_left_lane", etc.)
         self.spawn_counts = {
@@ -34,11 +34,11 @@ class Scenario:
             "horizontal_road_right_lane": 0
         }
 
-    def register_vehicle(self, vehicle: Vehicle) -> None:
+    def register_vehicle_in_scenario(self, vehicle: Vehicle) -> None:
         """Add a vehicle to components list and the appropriate lane list"""
         self.addComponent(vehicle)
         lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
-        self.vehicle_lanes[lane_key].append(vehicle)
+        # self.vehicle_lanes[lane_key].append(vehicle)
 
         # FOR TESTING: Update spawn counts
         self.spawn_counts[lane_key] += 1
@@ -81,13 +81,16 @@ class Scenario:
         if isinstance(o, Intersection) and self.intersection is o:
             self.intersection = None
         if isinstance(o, Vehicle):
-            self.remove_vehicle(o)
-    
-    def remove_vehicle(self, vehicle) -> None:
+            self.remove_vehicle_from_scenario(o)
+
+    def remove_vehicle_from_scenario(self, vehicle) -> None:
         """Remove a vehicle from its lane list"""
-        lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
-        if vehicle in self.vehicle_lanes[lane_key]:
-            self.vehicle_lanes[lane_key].remove(vehicle)
+        # lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
+        # if vehicle in self.vehicle_lanes[lane_key]:
+        #     self.vehicle_lanes[lane_key].remove(vehicle)
+        for component in self.components:
+            if isinstance(component, Road):
+                component.remove_vehicle_from_lane(vehicle)
     
     def getComponents(self) -> list:
         """Get all components in the scenario"""
