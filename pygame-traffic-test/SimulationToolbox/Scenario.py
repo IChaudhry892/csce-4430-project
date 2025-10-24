@@ -18,6 +18,14 @@ class Scenario:
         self.intersection = None # Intersection object
         self.images = images    # Images dictionary for loading graphics
 
+        # Lists for tracking vehicles in each lane
+        self.vehicle_lanes = {
+            "vertical_road_left_lane": [],
+            "vertical_road_right_lane": [],
+            "horizontal_road_left_lane": [],
+            "horizontal_road_right_lane": []
+        }
+
         # FOR TESTING: Track how many vehicles spawned per lane (keys: "vertical_road_left_lane", etc.)
         self.spawn_counts = {
             "vertical_road_left_lane": 0,
@@ -25,13 +33,22 @@ class Scenario:
             "horizontal_road_left_lane": 0,
             "horizontal_road_right_lane": 0
         }
-    
+
+    def register_vehicle(self, vehicle: Vehicle) -> None:
+        """Add a vehicle to components list and the appropriate lane list"""
+        self.addComponent(vehicle)
+        lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
+        self.vehicle_lanes[lane_key].append(vehicle)
+
+        # FOR TESTING: Update spawn counts
+        self.spawn_counts[lane_key] += 1
+
     def buildScenario(self):
         """Abstract method to be implemented by subclass (probably Main)""" # nvm, using it in scenarioHandler right now
         ROAD_VERTICAL = Road(0, 0, SimulationGraphicConfig.ROAD_VERTICAL_LENGTH, SimulationConfig.TRAFFIC_INTENSITIES["high"], SimulationConfig.ROAD_IDS["Vertical Road"], self.images['road_vertical'])
         self.addComponent(ROAD_VERTICAL)
-        ROAD_HORIZONAL = Road(0, 0, SimulationGraphicConfig.ROAD_HORIZONTAL_LENGTH, SimulationConfig.TRAFFIC_INTENSITIES["low"], SimulationConfig.ROAD_IDS["Horizontal Road"], self.images['road_horizontal'])
-        self.addComponent(ROAD_HORIZONAL)
+        ROAD_HORIZONTAL = Road(0, 0, SimulationGraphicConfig.ROAD_HORIZONTAL_LENGTH, SimulationConfig.TRAFFIC_INTENSITIES["high"], SimulationConfig.ROAD_IDS["Horizontal Road"], self.images['road_horizontal'])
+        self.addComponent(ROAD_HORIZONTAL)
         INTERSECTION = Intersection(0, 0, self.images['intersection'])
         self.addComponent(INTERSECTION)
         SIGNAL_ROAD_VERTICAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_Y_POS, self.images['signal_red'])
@@ -53,7 +70,6 @@ class Scenario:
     
     def removeComponent(self, o: object) -> None:
         """Remove a component from the scenario in the appropriate list"""
-        # ONLY USED FOR REMOVING VEHCILES CURRENTLY
         if o is None:
             return
         if o in self.components:
@@ -64,6 +80,14 @@ class Scenario:
             self.animatables.remove(o)
         if isinstance(o, Intersection) and self.intersection is o:
             self.intersection = None
+        if isinstance(o, Vehicle):
+            self.remove_vehicle(o)
+    
+    def remove_vehicle(self, vehicle) -> None:
+        """Remove a vehicle from its lane list"""
+        lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
+        if vehicle in self.vehicle_lanes[lane_key]:
+            self.vehicle_lanes[lane_key].remove(vehicle)
     
     def getComponents(self) -> list:
         """Get all components in the scenario"""

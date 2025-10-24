@@ -19,6 +19,7 @@ class ScenarioHandler:
         self.running = True
         self.real_time = SimulationConfig.REAL_TIME
         self.timer = SimulationConfig.TIMER
+        self.frame_count = SimulationConfig.FRAME_COUNT
         self.stop_real_time = SimulationConfig.STOP_REAL_TIME
         self.speed_factor = SimulationConfig.SPEED_FACTOR
 
@@ -39,36 +40,38 @@ class ScenarioHandler:
     
     def isTerminated(self) -> bool:
         """Check if the simulation scenario is terminated"""
-        pass
+        if self.real_time >= self.stop_real_time:
+            return True
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return True
+        return False
 
     def runSimulation(self) -> None:
         """Run the simulation scenario"""
         self.scenario.buildScenario()
 
         while self.running:
+            # Check termination conditions
+            if self.isTerminated():
+                self.cleanup()
+                self.running = False
+
             # Timing control
+            self.frame_count += 1
             real_time_per_frame = self.clock.tick(self.fps) / 1000.0
             self.real_time += real_time_per_frame
             virtual_time_per_frame = real_time_per_frame * self.speed_factor
             self.timer += virtual_time_per_frame
-            if self.real_time >= self.stop_real_time:
-                self.running = False
-
-            # Event handler, pygame.Quit means user closed the game window
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
 
             # Spawn vehicles based on traffic intensity for each road
             for road in self.scenario.getComponents():
-                if isinstance(road, Road):
-                    if random.random() < road.getTrafficIntensity():
+                if isinstance(road, Road) and random.random() < road.getTrafficIntensity() and road.can_spawn_vehicle(self.scenario):
                         vehicle = road.create_vehicle(self.scenario.images)
-                        self.scenario.addComponent(vehicle)
+                        self.scenario.register_vehicle(vehicle)
 
                         # FOR TESTING: Update and print spawn counts
-                        lane_key = f"{road.getRoadID()}_{vehicle.lane_id}"
-                        self.scenario.spawn_counts[lane_key] += 1
+                        lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
                         print(f"Spawned vehicle in {lane_key}: total={self.scenario.spawn_counts[lane_key]}")
 
             # Update simulatable components (just vehicles for now)
@@ -78,11 +81,13 @@ class ScenarioHandler:
                     self.scenario.removeComponent(simulatable)
 
             # Redraw the simulation window
-            self.display.redrawSimulationWindow(self, self.timer, self.real_time)
+            self.display.redrawSimulationWindow(self, self.timer, self.real_time, self.frame_count)
 
     def cleanup(self) -> None:
         """Cleanup resources used by the scenario handler"""
-        pass
+        while self.scenario.getComponents():
+            component = self.scenario.getComponents()[0]
+            self.scenario.removeComponent(component)
 
     def calculateAverageTime(self) -> float:
         """Calculate the average waiting time of all vehicles in the scenario??"""

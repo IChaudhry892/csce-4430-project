@@ -40,12 +40,15 @@ class SimulationGraphicConfig:
     # Vehicle Constants
     VEHICLE_WIDTH = 80
     VEHICLE_HEIGHT = 60
+    VERTICAL_ROAD_VEHICLE_START_Y = SCREEN_HEIGHT
+    HORIZONTAL_ROAD_VEHICLE_START_X = SCREEN_WIDTH
     LANE_STARTING_POSITIONS = {
-        "vertical_road_left_lane": [(SCREEN_WIDTH // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
-        "vertical_road_right_lane": [SCREEN_WIDTH // 2 + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), SCREEN_HEIGHT],
-        "horizontal_road_left_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)],
-        "horizontal_road_right_lane": [SCREEN_WIDTH, (SCREEN_HEIGHT // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)]
+        "vertical_road_left_lane": [(SCREEN_WIDTH // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), VERTICAL_ROAD_VEHICLE_START_Y],
+        "vertical_road_right_lane": [SCREEN_WIDTH // 2 + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2), VERTICAL_ROAD_VEHICLE_START_Y],
+        "horizontal_road_left_lane": [HORIZONTAL_ROAD_VEHICLE_START_X, (SCREEN_HEIGHT // 2) + (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)],
+        "horizontal_road_right_lane": [HORIZONTAL_ROAD_VEHICLE_START_X, (SCREEN_HEIGHT // 2) - (ROAD_WIDTH // 4) - (VEHICLE_HEIGHT // 2)]
     }
+    VEHICLE_SPAWN_GAP_METERS = 0.5  # Minimum gap between spawned vehicles in meters
 
     # Traffic Signal Constants
     TRAFFIC_SIGNAL_WIDTH = 80

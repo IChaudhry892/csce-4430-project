@@ -8,7 +8,7 @@ class Display:
         self.images = images
         self.font = pygame.font.SysFont(None, 36)
 
-    def redrawSimulationWindow(self, handler, timer: float, real_time: float) -> None:
+    def redrawSimulationWindow(self, handler, timer: float, real_time: float, frame_count: int) -> None:
         """Redraw the entire simulation window with the current state"""
         self.screen.blit(self.images["background"], (0, 0))
 
@@ -19,9 +19,11 @@ class Display:
         handler.drawSimulatables(self.screen)
 
         # HUD: Display virtual timer and real-time elapsed
-        timer_text = self.font.render(f'Timer: {timer}', True, (255, 255, 255))
-        real_time_text = self.font.render(f'Real Time: {real_time}', True, (255, 255, 255))
+        timer_text = self.font.render(f'Timer: {timer:.2f}', True, (255, 255, 255))
+        real_time_text = self.font.render(f'Real Time: {real_time:.2f}', True, (255, 255, 255))
+        frame_count_text = self.font.render(f'Frame: {frame_count}', True, (255, 255, 255))
         self.screen.blit(timer_text, (10, 10))
         self.screen.blit(real_time_text, (10, 40))
+        self.screen.blit(frame_count_text, (10, 70))
 
         pygame.display.update()
