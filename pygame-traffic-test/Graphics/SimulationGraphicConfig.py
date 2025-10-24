@@ -52,7 +52,7 @@ class SimulationGraphicConfig:
         "horizontal_road_left_lane": [HORIZONTAL_ROAD_START_X, HORIZONTAL_ROAD_LEFT_LANE_START_Y],
         "horizontal_road_right_lane": [HORIZONTAL_ROAD_START_X, HORIZONTAL_ROAD_RIGHT_LANE_START_Y]
     }
-    VEHICLE_SPAWN_GAP_METERS = 0.5  # Minimum gap between spawned vehicles in meters
+    VEHICLE_SPAWN_GAP_METERS = 0  # Minimum gap between spawned vehicles in meters
 
     # Traffic Signal Constants
     TRAFFIC_SIGNAL_WIDTH = 80

@@ -18,14 +18,6 @@ class Scenario:
         self.intersection = None # Intersection object
         self.images = images    # Images dictionary for loading graphics
 
-        # Lists for tracking vehicles in each lane
-        # self.vehicle_lanes = {
-        #     "vertical_road_left_lane": [],
-        #     "vertical_road_right_lane": [],
-        #     "horizontal_road_left_lane": [],
-        #     "horizontal_road_right_lane": []
-        # }
-
         # FOR TESTING: Track how many vehicles spawned per lane (keys: "vertical_road_left_lane", etc.)
         self.spawn_counts = {
             "vertical_road_left_lane": 0,
@@ -38,7 +30,6 @@ class Scenario:
         """Add a vehicle to components list and the appropriate lane list"""
         self.addComponent(vehicle)
         lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
-        # self.vehicle_lanes[lane_key].append(vehicle)
 
         # FOR TESTING: Update spawn counts
         self.spawn_counts[lane_key] += 1
