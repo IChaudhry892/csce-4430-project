@@ -11,11 +11,27 @@
 ## Running the Pygame Traffic Test
 
 1. Make sure you have Python 3 and `pygame` installed:
+
+   You can check if you have Python3 installed by:
+   ```sh
+   python3 --version
+   ```
+
+   Install Pygame by:
+   
    ```sh
    pip install pygame
-2. Navigate to the `pygame-traffic-test` directory:
+   ````
+   
+   If the previous command didn't work, you could also try:
+   
+   ```sh
+   sudo apt install python3-pygame
+   ```
+   
+3. Navigate to the `pygame-traffic-test` directory:
    ```sh
    cd pygame-traffic-test
-3. Run the test:
+4. Run the test:
    ```sh
    python3 main.py
