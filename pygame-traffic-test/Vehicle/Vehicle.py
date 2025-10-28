@@ -12,6 +12,8 @@ class Vehicle(Animatable, Simulatable):
         self.road_id = road_id
         self.lane_id = lane_id
         self.x, self.y = SimulationGraphicConfig.LANE_STARTING_POSITIONS[f"{road_id}_{lane_id}"]
+        self.state = SimulationConfig.VEHICLE_STATES["moving"]  # default is "moving", can change to "waiting"
+        self.stop_line_position = SimulationGraphicConfig.STOP_LINE_POSITIONS[road_id]
 
     def move(self):
         distance_pixels = self.velocity * self.delta_time * SimulationConfig.PIXELS_PER_METER # 16.665 pixels per frame at 20 FPS
