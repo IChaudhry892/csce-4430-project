@@ -36,37 +36,40 @@ class Vehicle(Animatable, Simulatable):
             if road_component.getRoadID() == self.road_id:
                 road = road_component
         lanelist = road.vehicle_lanes[self.lane_id] # Current lane of the current road of the current vehicle
-
-        vehicles = []
-        for vehicle in lanelist: # Find all vehicles that are not current vehicle
-            if vehicle is not self:
-                vehicles.append(vehicle)
-
+        
+        vehicles = [v for v in lanelist if v is not self]
+        
         aheadvehicles = []
-        if self.road_id == "horizontal_road" and aheadvehicles:
+        if self.road_id == "horizontal_road":
             for vehicle in vehicles:
                 if vehicle.x < self.x:
                     aheadvehicles.append(vehicle)
+                
+            if not aheadvehicles:
+                return None   # No car ahead, safe to move
+            
             nearestvehicle = max(aheadvehicles, key=lambda v: v.x)
-            return (self.y - nearestvehicle.y) - nearestvehicle.height # returns the pixel gape between a vehicle and the nearest ahead vehicle
-        elif self.road_id == "vertical_road" and aheadvehicles:
+            return (self.x - nearestvehicle.x) - nearestvehicle.height # returns the pixel gape between a vehicle and the nearest ahead vehicle
+        
+        elif self.road_id == "vertical_road":
             for vehicle in vehicles:
                 if vehicle.y < self.y:
                     aheadvehicles.append(vehicle)
+
+            if not aheadvehicles:
+                return None   # No car ahead, safe to move
+            
             nearestvehicle = max(aheadvehicles, key=lambda v: v.y)
             return (self.y - nearestvehicle.y) - nearestvehicle.height # returns the pixel gape between a vehicle and the nearest ahead vehicle
-
-
-
-
-
-
-        return 
+        return None
 
     def simulate(self, delta_time):
         self.delta_time = delta_time
         signal = self.scenario.get_signal_for_road(self.road_id)
         calculated_ahead_gap = self.calculate_ahead_vehicle_gap()
+        
+        # if calculated_ahead_gap != None:        # Uncomment this to print the pixel gaps. I recommend commenting out the vertical road if you do this.
+        #     print(calculated_ahead_gap)
 
         # Update vehicle state based on traffic signal
         if signal.is_red():
