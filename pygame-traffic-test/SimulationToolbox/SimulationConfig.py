@@ -11,3 +11,5 @@ class SimulationConfig:
 
     ROAD_IDS = {"Vertical Road": "vertical_road", "Horizontal Road": "horizontal_road"}
     TRAFFIC_INTENSITIES = {"high": 15, "medium": 0.10, "low": 0.05} # Chance of spawning a vehicle per virtual minute per road
+    TRAFFIC_SIGNAL_STATES = {"Red": "signal_red", "Green": "signal_green"}
+    VEHICLE_STATES = {"moving": "moving", "waiting": "waiting"}
