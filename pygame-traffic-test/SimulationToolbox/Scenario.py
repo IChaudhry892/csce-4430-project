@@ -106,3 +106,11 @@ class Scenario:
             if isinstance(component, TrafficSignal) and component.getRoadID() == road_id:
                 return component
         return None
+
+    def getRoads(self) -> list:
+        """Get all road components in the scenario"""
+        roads = []
+        for component in self.components:
+            if isinstance(component, Road):
+                roads.append(component)
+        return roads
