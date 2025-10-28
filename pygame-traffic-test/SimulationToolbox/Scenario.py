@@ -29,6 +29,7 @@ class Scenario:
     def register_vehicle_in_scenario(self, vehicle: Vehicle) -> None:
         """Add a vehicle to components list and the appropriate lane list"""
         self.addComponent(vehicle)
+        vehicle.scenario = self
         lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
 
         # FOR TESTING: Update spawn counts
@@ -98,3 +99,10 @@ class Scenario:
     def getIntersection(self) -> Intersection:
         """Get the intersection component in the scenario"""
         return self.intersection
+
+    def get_signal_for_road(self, road_id) -> TrafficSignal:
+        """Get the traffic signal for the specified road ID"""
+        for component in self.components:
+            if isinstance(component, TrafficSignal) and component.getRoadID() == road_id:
+                return component
+        return None

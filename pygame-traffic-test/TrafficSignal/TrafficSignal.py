@@ -1,5 +1,6 @@
 from Animation.Animatable import Animatable
 from Graphics.SimulationGraphicConfig import SimulationGraphicConfig
+from SimulationToolbox.SimulationConfig import SimulationConfig
 
 class TrafficSignal(Animatable):
     def __init__(self, x, y, image, state, road_id):
@@ -26,7 +27,7 @@ class TrafficSignal(Animatable):
         self.image = image
 
     def is_green(self) -> bool:
-        return self.state == SimulationGraphicConfig.TRAFFIC_SIGNAL_STATES["green"]
+        return self.state == SimulationConfig.TRAFFIC_SIGNAL_STATES["green"]
     
     def is_red(self) -> bool:
-        return self.state == SimulationGraphicConfig.TRAFFIC_SIGNAL_STATES["red"]
+        return self.state == SimulationConfig.TRAFFIC_SIGNAL_STATES["red"]

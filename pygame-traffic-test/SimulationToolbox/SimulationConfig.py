@@ -10,6 +10,6 @@ class SimulationConfig:
     STOP_REAL_TIME = 30.0   # Stop simulation after 30 real-time seconds
 
     ROAD_IDS = {"Vertical Road": "vertical_road", "Horizontal Road": "horizontal_road"}
-    TRAFFIC_INTENSITIES = {"high": 15, "medium": 0.10, "low": 0.05} # Chance of spawning a vehicle per virtual minute per road
+    TRAFFIC_INTENSITIES = {"high": 0.15, "medium": 0.10, "low": 0.05} # Chance of spawning a vehicle per virtual minute per road
     VEHICLE_STATES = {"moving": "moving", "waiting": "waiting"}
     TRAFFIC_SIGNAL_STATES = {"green": "green", "red": "red"}
