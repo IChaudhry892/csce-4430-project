@@ -29,6 +29,7 @@ class Scenario:
     def register_vehicle_in_scenario(self, vehicle: Vehicle) -> None:
         """Add a vehicle to components list and the appropriate lane list"""
         self.addComponent(vehicle)
+        vehicle.scenario = self
         lane_key = f"{vehicle.road_id}_{vehicle.lane_id}"
 
         # FOR TESTING: Update spawn counts
@@ -42,9 +43,9 @@ class Scenario:
         self.addComponent(ROAD_HORIZONTAL)
         INTERSECTION = Intersection(0, 0, self.images['intersection'])
         self.addComponent(INTERSECTION)
-        SIGNAL_ROAD_VERTICAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_Y_POS, self.images['signal_red'])
+        SIGNAL_ROAD_VERTICAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_Y_POS, self.images, SimulationConfig.TRAFFIC_SIGNAL_STATES["Red"], SimulationConfig.ROAD_IDS["Vertical Road"])
         self.addComponent(SIGNAL_ROAD_VERTICAL)
-        SIGNAL_ROAD_HORIZONTAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_Y_POS, self.images['signal_green'])
+        SIGNAL_ROAD_HORIZONTAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_Y_POS, self.images, SimulationConfig.TRAFFIC_SIGNAL_STATES["Green"], SimulationConfig.ROAD_IDS["Horizontal Road"])
         self.addComponent(SIGNAL_ROAD_HORIZONTAL)
 
     def addComponent(self, o: object) -> None:
@@ -98,3 +99,10 @@ class Scenario:
     def getIntersection(self) -> Intersection:
         """Get the intersection component in the scenario"""
         return self.intersection
+
+    def get_signal_for_road(self, road_id) -> TrafficSignal:
+        """Get the traffic signal for the specified road ID"""
+        for component in self.components:
+            if isinstance(component, TrafficSignal) and component.getRoadID() == road_id:
+                return component
+        return None
