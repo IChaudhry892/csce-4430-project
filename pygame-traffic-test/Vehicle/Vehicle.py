@@ -2,7 +2,7 @@ from Animation.Animatable import Animatable
 from SimulationToolbox.Simulatable import Simulatable
 from Graphics.SimulationGraphicConfig import SimulationGraphicConfig
 from SimulationToolbox.SimulationConfig import SimulationConfig
-# from Road.Road import Road
+
 class Vehicle(Animatable, Simulatable):
     def __init__(self, width, height, velocity, image, road_id, lane_id):
         self.width = width
@@ -29,8 +29,8 @@ class Vehicle(Animatable, Simulatable):
     def is_off_screen(self):
         return self.x < 0 - self.width or self.y < 0 - self.width
     
-    # Finds the gap between a vehicle and the ahead vehicle
-    def calculate_ahead_vehicle_gap(self):
+    def get_nearest_ahead_vehicle(self):
+        """Get the nearest vehicle ahead in the same lane, if any"""
         road = None
         for road_component in self.scenario.getRoads():
             if road_component.getRoadID() == self.road_id:
@@ -49,7 +49,7 @@ class Vehicle(Animatable, Simulatable):
                 return None   # No car ahead, safe to move
             
             nearestvehicle = max(aheadvehicles, key=lambda v: v.x)
-            return (self.x - nearestvehicle.x) - nearestvehicle.height # returns the pixel gape between a vehicle and the nearest ahead vehicle
+            return nearestvehicle
         
         elif self.road_id == "vertical_road":
             for vehicle in vehicles:
@@ -60,13 +60,31 @@ class Vehicle(Animatable, Simulatable):
                 return None   # No car ahead, safe to move
             
             nearestvehicle = max(aheadvehicles, key=lambda v: v.y)
-            return (self.y - nearestvehicle.y) - nearestvehicle.height # returns the pixel gape between a vehicle and the nearest ahead vehicle
+            return nearestvehicle
+        return None
+
+    def is_nearest_ahead_vehicle_waiting(self):
+        """Check if the nearest ahead vehicle is in 'waiting' state"""
+        vehicle = self.get_nearest_ahead_vehicle()
+        if vehicle:
+            return vehicle.state == SimulationConfig.VEHICLE_STATES["waiting"]
+        return False
+    
+    def get_ahead_vehicle_gap(self):
+        """Get the pixel gap to the nearest ahead vehicle, if any"""
+        ahead_vehicle = self.get_nearest_ahead_vehicle()
+        if ahead_vehicle is None:
+            return None
+        if self.road_id == "horizontal_road":
+            return (self.x - ahead_vehicle.x) - ahead_vehicle.width
+        elif self.road_id == "vertical_road":
+            return (self.y - ahead_vehicle.y) - ahead_vehicle.height
         return None
 
     def simulate(self, delta_time):
         self.delta_time = delta_time
         signal = self.scenario.get_signal_for_road(self.road_id)
-        calculated_ahead_gap = self.calculate_ahead_vehicle_gap()
+        calculated_ahead_vehicle_gap = self.get_ahead_vehicle_gap()
         
         # if calculated_ahead_gap != None:        # Uncomment this to print the pixel gaps. I recommend commenting out the vertical road if you do this.
         #     print(calculated_ahead_gap)
@@ -78,8 +96,12 @@ class Vehicle(Animatable, Simulatable):
                 self.state = SimulationConfig.VEHICLE_STATES["waiting"]
             elif self.road_id == "horizontal_road" and self.x <= self.stop_line_position:
                 self.state = SimulationConfig.VEHICLE_STATES["waiting"]
-            else:
+            else: # If not at stop line, keep moving until reaching it or ahead vehicle
                 self.state = SimulationConfig.VEHICLE_STATES["moving"]
+                if calculated_ahead_vehicle_gap is not None and self.is_nearest_ahead_vehicle_waiting(): # There is an ahead vehicle and it is waiting
+                    min_gap = SimulationGraphicConfig.VEHICLE_MIN_GAP_METERS * SimulationConfig.PIXELS_PER_METER
+                    if calculated_ahead_vehicle_gap <= min_gap:
+                        self.state = SimulationConfig.VEHICLE_STATES["waiting"]
         elif signal.is_green():
             self.state = SimulationConfig.VEHICLE_STATES["moving"]
 
