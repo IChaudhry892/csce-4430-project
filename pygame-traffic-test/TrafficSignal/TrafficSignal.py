@@ -32,3 +32,11 @@ class TrafficSignal(Animatable):
     
     def is_red(self) -> bool:
         return self.state == SimulationConfig.TRAFFIC_SIGNAL_STATES["Red"]
+    
+    def switch_to_green(self) -> None:
+        """Switch the traffic signal to green state"""
+        self.setState(SimulationConfig.TRAFFIC_SIGNAL_STATES["Green"])
+
+    def switch_to_red(self) -> None:
+        """Switch the traffic signal to red state"""
+        self.setState(SimulationConfig.TRAFFIC_SIGNAL_STATES["Red"])

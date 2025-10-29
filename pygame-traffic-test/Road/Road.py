@@ -97,3 +97,17 @@ class Road(Animatable):
         elif self.road_id == SimulationConfig.ROAD_IDS["Horizontal Road"]:
             img = images['car_west']
             return Vehicle(SimulationGraphicConfig.VEHICLE_WIDTH, SimulationGraphicConfig.VEHICLE_HEIGHT, SimulationConfig.VEHICLE_VELOCITY_MPS, img, self.road_id, lane_id)
+        
+    def get_number_of_vehicles_behind_intersection(self) -> int:
+        """Get the number of vehicles currently behind the intersection on this road"""
+        count = 0
+        stop_line_position = SimulationGraphicConfig.STOP_LINE_POSITIONS[self.road_id]
+        for lane_id, vehicle_list in self.vehicle_lanes.items():
+            for vehicle in vehicle_list:
+                if self.road_id == SimulationConfig.ROAD_IDS["Vertical Road"]:
+                    if vehicle.y + vehicle.height > stop_line_position:
+                        count += 1
+                elif self.road_id == SimulationConfig.ROAD_IDS["Horizontal Road"]:
+                    if vehicle.x + vehicle.width > stop_line_position:
+                        count += 1
+        return count

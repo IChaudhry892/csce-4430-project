@@ -92,9 +92,11 @@ class Vehicle(Animatable, Simulatable):
         # Update vehicle state based on traffic signal
         if signal.is_red():
             # Check if approaching stop line
-            if self.road_id == "vertical_road" and self.y <= self.stop_line_position:
+            if self.road_id == "vertical_road" and self.y >= self.stop_line_position and self.y <= self.stop_line_position + 10:
                 self.state = SimulationConfig.VEHICLE_STATES["waiting"]
-            elif self.road_id == "horizontal_road" and self.x <= self.stop_line_position:
+                print(f"Vehicle at ({self.x}, {self.y}) and stop line rectangle at ({self.stop_line_position}, {self.stop_line_position + 10}).")
+            elif self.road_id == "horizontal_road" and self.x >= (self.stop_line_position - 10) and self.x <= (self.stop_line_position + 10):
+                print(f"Vehicle at ({self.x}, {self.y}) and stop line rectangle at ({self.stop_line_position - 10}, {self.stop_line_position + 10}).")
                 self.state = SimulationConfig.VEHICLE_STATES["waiting"]
             else: # If not at stop line, keep moving until reaching it or ahead vehicle
                 self.state = SimulationConfig.VEHICLE_STATES["moving"]

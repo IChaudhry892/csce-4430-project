@@ -36,7 +36,8 @@ class ScenarioHandler:
         """Draw all simulatable components in the scenario""" # Called in Display.redrawSimulationWindow
         simulatables = self.scenario.getSimulatables()
         for simulatable in simulatables:
-            simulatable.draw(screen)
+            if hasattr(simulatable, 'draw'):
+                simulatable.draw(screen)
     
     def isTerminated(self) -> bool:
         """Check if the simulation scenario is terminated"""
@@ -76,7 +77,7 @@ class ScenarioHandler:
             # Update simulatable components (just vehicles for now)
             for simulatable in self.scenario.getSimulatables()[:]:
                 simulatable.simulate(virtual_time_per_frame)
-                if simulatable.is_off_screen():
+                if isinstance(simulatable, Vehicle) and simulatable.is_off_screen():
                     self.scenario.removeComponent(simulatable)
 
             # Redraw the simulation window

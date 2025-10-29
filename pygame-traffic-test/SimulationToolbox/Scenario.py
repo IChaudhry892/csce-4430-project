@@ -7,6 +7,8 @@ from Road.Road import Road
 from TrafficSignal.TrafficSignal import TrafficSignal
 from SimulationToolbox.SimulationConfig import SimulationConfig
 
+from SignalController.SignalController import SignalController
+
 import random
 from Vehicle.Vehicle import Vehicle
 
@@ -47,6 +49,8 @@ class Scenario:
         self.addComponent(SIGNAL_ROAD_VERTICAL)
         SIGNAL_ROAD_HORIZONTAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_Y_POS, self.images, SimulationConfig.TRAFFIC_SIGNAL_STATES["Red"], SimulationConfig.ROAD_IDS["Horizontal Road"])
         self.addComponent(SIGNAL_ROAD_HORIZONTAL)
+        SIGNAL_CONTROLLER = SignalController(SIGNAL_ROAD_VERTICAL, SIGNAL_ROAD_HORIZONTAL, self, 0.0)
+        self.addComponent(SIGNAL_CONTROLLER)
 
     def addComponent(self, o: object) -> None:
         """Add a component to the scenario in the appropriate list"""

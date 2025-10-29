@@ -28,6 +28,14 @@ class Display:
         self.screen.blit(real_time_text, (10, 40))
         self.screen.blit(frame_count_text, (10, 70))
 
+        # FOR DEBUGGING: draw vehicle counts behind intersections
+        y_position = 100
+        for road in handler.scenario.getRoads():
+            vehicle_count = road.get_number_of_vehicles_behind_intersection()
+            vehicle_count_text = self.font.render(f'Vehicles Behind {road.getRoadID()}: {vehicle_count}', True, (255, 255, 255))
+            self.screen.blit(vehicle_count_text, (10, y_position))
+            y_position += 30
+
         # FOR DEBUGGING: draw per-road spawn rectangles and all vehicle rects (keeps visuals in sync)
         scenario = handler.scenario
         for comp in scenario.getComponents():
