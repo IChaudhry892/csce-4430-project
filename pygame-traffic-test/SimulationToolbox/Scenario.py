@@ -45,7 +45,7 @@ class Scenario:
         self.addComponent(INTERSECTION)
         SIGNAL_ROAD_VERTICAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_VERTICAL_Y_POS, self.images, SimulationConfig.TRAFFIC_SIGNAL_STATES["Red"], SimulationConfig.ROAD_IDS["Vertical Road"])
         self.addComponent(SIGNAL_ROAD_VERTICAL)
-        SIGNAL_ROAD_HORIZONTAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_Y_POS, self.images, SimulationConfig.TRAFFIC_SIGNAL_STATES["Green"], SimulationConfig.ROAD_IDS["Horizontal Road"])
+        SIGNAL_ROAD_HORIZONTAL = TrafficSignal(SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_X_POS, SimulationGraphicConfig.SIGNAL_ROAD_HORIZONTAL_Y_POS, self.images, SimulationConfig.TRAFFIC_SIGNAL_STATES["Red"], SimulationConfig.ROAD_IDS["Horizontal Road"])
         self.addComponent(SIGNAL_ROAD_HORIZONTAL)
 
     def addComponent(self, o: object) -> None:
