@@ -90,8 +90,8 @@ class Vehicle(Animatable, Simulatable):
     # ----------------------------------
     # === HELPER METHODS FOR SIGNALS
     # ----------------------------------
-
     def should_stop_at_signal(self, next_frame_position) -> bool:
+        """Check if the vehicle would cross the stop line in the next frame"""
         if self.road_id == "vertical_road":
             return self.y > self.stop_line_position and next_frame_position < self.stop_line_position
         elif self.road_id == "horizontal_road":
@@ -99,73 +99,65 @@ class Vehicle(Animatable, Simulatable):
         return False
 
     def within_stop_zone(self) -> bool:
-        pass
+        """Check if the vehicle is within 5 pixels ahead of the stop line"""
+        if self.road_id == "vertical_road":
+            return self.stop_line_position - 5 <= self.y <= self.stop_line_position
+        elif self.road_id == "horizontal_road":
+            return self.stop_line_position - 5 <= self.x <= self.stop_line_position
+        return False
 
-    def check_ahead_vehicle_gap(self) -> None:
-        pass
+    def check_ahead_vehicle_gap(self, gap) -> None:
+        """Check the gap to the nearest ahead vehicle and adjust state if needed"""
+        if gap is not None and self.is_nearest_ahead_vehicle_waiting():
+            min_gap = SimulationGraphicConfig.VEHICLE_MIN_GAP_METERS * SimulationConfig.PIXELS_PER_METER
+            if gap <= min_gap:
+                self.state = SimulationConfig.VEHICLE_STATES["waiting"]
+            else:
+                self.state = SimulationConfig.VEHICLE_STATES["moving"]
 
-    def handle_red_signal(self, signal) -> None:
-        pass
+    def handle_red_signal(self, distance_pixels, gap) -> None:
+        """Handle vehicle behavior when the traffic signal is red"""
+        if self.road_id == "vertical_road":
+            next_frame_y = self.y - distance_pixels
+            if self.should_stop_at_signal(next_frame_y):
+                self.y = self.stop_line_position
+                self.state = SimulationConfig.VEHICLE_STATES["waiting"]
+                print(f"Vehicle at ({self.x}, {self.y}) stopped at vertical line {self.stop_line_position}.")
+            elif self.within_stop_zone():
+                self.state = SimulationConfig.VEHICLE_STATES["waiting"]
+            elif self.y < self.stop_line_position - 5: # Already 5 pixels past the stop line
+                self.state = SimulationConfig.VEHICLE_STATES["moving"]
+            else:
+                self.check_ahead_vehicle_gap(gap)
+        elif self.road_id == "horizontal_road":
+            next_frame_x = self.x - distance_pixels
+            if self.should_stop_at_signal(next_frame_x):
+                self.x = self.stop_line_position
+                self.state = SimulationConfig.VEHICLE_STATES["waiting"]
+                print(f"Vehicle at ({self.x}, {self.y}) stopped at horizontal line {self.stop_line_position}.")
+            elif self.within_stop_zone():
+                self.state = SimulationConfig.VEHICLE_STATES["waiting"]
+            elif self.x < self.stop_line_position - 5: # Already 5 pixels past the stop line
+                self.state = SimulationConfig.VEHICLE_STATES["moving"]
+            else:
+                self.check_ahead_vehicle_gap(gap)
 
-    def handle_signal_behavior(self, signal) -> None:
-        pass
-
-    def simulate(self, delta_time):
-        self.delta_time = delta_time
-        signal = self.scenario.get_signal_for_road(self.road_id)
-        calculated_ahead_vehicle_gap = self.get_ahead_vehicle_gap()
-        distance_pixels = self.velocity * delta_time * SimulationConfig.PIXELS_PER_METER
-        
-        # if calculated_ahead_gap != None:        # Uncomment this to print the pixel gaps. I recommend commenting out the vertical road if you do this.
-        #     print(calculated_ahead_gap)
-
-        # Update vehicle state based on traffic signal
+    def handle_signal_behavior(self, signal, distance_pixels, gap) -> None:
+        """Handle vehicle behavior based on traffic signal state"""
         if signal.is_red():
-            # Check if vehicle will cross the stop line in the next frame
-            if self.road_id == "vertical_road":
-                next_frame_y = self.y - distance_pixels
-                # Currently behind the stop line and would cross it next frame
-                if self.y > self.stop_line_position and next_frame_y < self.stop_line_position:
-                    # Move only up to the stop line and wait
-                    self.y = self.stop_line_position
-                    self.state = SimulationConfig.VEHICLE_STATES["waiting"]
-                    print(f"Vehicle at ({self.x}, {self.y}) and stop line rectangle at ({self.stop_line_position}, {self.stop_line_position + 10}).")
-                # If at stop line (within 5 pixels ahead of it) -> keep waiting
-                elif self.y <= self.stop_line_position and self.y >= self.stop_line_position - 5:
-                    self.state = SimulationConfig.VEHICLE_STATES["waiting"]
-                # If already well past the stop line -> keep moving
-                elif self.y < self.stop_line_position - 5:
-                    self.state = SimulationConfig.VEHICLE_STATES["moving"]
-                else:
-                    # Not yet at stop line, keep moving until reaching it or ahead vehicle
-                    self.state = SimulationConfig.VEHICLE_STATES["moving"]
-                    if calculated_ahead_vehicle_gap is not None and self.is_nearest_ahead_vehicle_waiting(): # There is an ahead vehicle and it is waiting
-                        min_gap = SimulationGraphicConfig.VEHICLE_MIN_GAP_METERS * SimulationConfig.PIXELS_PER_METER
-                        if calculated_ahead_vehicle_gap <= min_gap:
-                            self.state = SimulationConfig.VEHICLE_STATES["waiting"]
-            elif self.road_id == "horizontal_road":
-                next_frame_x = self.x - distance_pixels
-                # Currently behind the stop line and would cross it next frame
-                if self.x > self.stop_line_position and next_frame_x < self.stop_line_position:
-                    # Move only up to the stop line and wait
-                    self.x = self.stop_line_position
-                    self.state = SimulationConfig.VEHICLE_STATES["waiting"]
-                    print(f"Vehicle at ({self.x}, {self.y}) and stop line rectangle at ({self.stop_line_position}, {self.stop_line_position + 10}).")
-                # If at stop line (within 5 pixels ahead of it) -> keep waiting
-                elif self.x <= self.stop_line_position and self.x >= self.stop_line_position - 5:
-                    self.state = SimulationConfig.VEHICLE_STATES["waiting"]
-                # If already well past the stop line -> keep moving
-                elif self.x < self.stop_line_position - 5:
-                    self.state = SimulationConfig.VEHICLE_STATES["moving"]
-                else:
-                    # Not yet at stop line, keep moving until reaching it or ahead vehicle
-                    self.state = SimulationConfig.VEHICLE_STATES["moving"]
-                    if calculated_ahead_vehicle_gap is not None and self.is_nearest_ahead_vehicle_waiting(): # There is an ahead vehicle and it is waiting
-                        min_gap = SimulationGraphicConfig.VEHICLE_MIN_GAP_METERS * SimulationConfig.PIXELS_PER_METER
-                        if calculated_ahead_vehicle_gap <= min_gap:
-                            self.state = SimulationConfig.VEHICLE_STATES["waiting"]              
+            self.handle_red_signal(distance_pixels, gap)
         elif signal.is_green():
             self.state = SimulationConfig.VEHICLE_STATES["moving"]
+
+    def simulate(self, delta_time):
+        """Simulate vehicle behavior for the given delta time"""
+        self.delta_time = delta_time
+        signal = self.scenario.get_signal_for_road(self.road_id)
+        ahead_vehicle_gap = self.get_ahead_vehicle_gap()
+        distance_pixels = self.velocity * delta_time * SimulationConfig.PIXELS_PER_METER
+
+        # Update vehicle state based on traffic signal
+        self.handle_signal_behavior(signal, distance_pixels, ahead_vehicle_gap)
 
         # Move vehicle if in "moving" state
         if self.state == SimulationConfig.VEHICLE_STATES["moving"]:
