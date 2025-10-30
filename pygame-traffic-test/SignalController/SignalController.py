@@ -9,15 +9,15 @@ class SignalController(Simulatable):
     Uses simulation virtual time (delta_time passed to simulate).
     """
 
-    def __init__(self, vertical_signal: TrafficSignal, horizontal_signal: TrafficSignal, scenario, start_virtual_time: float = 0.0, toggle_period_seconds: float = 5.0):
+    def __init__(self, vertical_signal: TrafficSignal, horizontal_signal: TrafficSignal, scenario, virtual_time_elapsed: float = 0.0, toggle_interval: float = 15.0):
         self.vertical_signal = vertical_signal
         self.horizontal_signal = horizontal_signal
-        self._elapsed = start_virtual_time
-        self._period = max(0.1, float(toggle_period_seconds))  # avoid zero/negative period
-        self.both_signals_red_duration = SimulationConfig.BOTH_SIGNALS_RED_DURATION
+        self.virtual_time_elapsed = virtual_time_elapsed
+        self.toggle_interval = toggle_interval
+        self.both_signals_red_duration = SimulationConfig.BOTH_SIGNALS_RED_DURATION * SimulationConfig.SPEED_FACTOR # 3 virtual seconds
         self.both_signals_red_remaining_time = 0.0
-        self.post_vertical_state = ""
-        self.post_horizontal_state = ""
+        self.post_toggle_vertical_state = ""
+        self.post_toggle_horizontal_state = ""
 
         # Ensure initial states are opposite.
         # If both are the same (e.g., both Red), set vertical Green and horizontal Red by default.
@@ -42,37 +42,37 @@ class SignalController(Simulatable):
 
         if self.vertical_signal.is_green():
             # After both red duration, vertical -> red, horizontal -> green
-            self.post_vertical_state = "signal_red"
-            self.post_horizontal_state = "signal_green"
+            self.post_toggle_vertical_state = "signal_red"
+            self.post_toggle_horizontal_state = "signal_green"
         else:
             # After both red duration, vertical -> green, horizontal -> red
-            self.post_vertical_state = "signal_green"
-            self.post_horizontal_state = "signal_red"
+            self.post_toggle_vertical_state = "signal_green"
+            self.post_toggle_horizontal_state = "signal_red"
 
         # Set both signals to red for the specified duration
         self.toggle_both_signals_red()
         self.both_signals_red_remaining_time = self.both_signals_red_duration
 
     def simulate(self, delta_time: float) -> None:
-        delta_time /= SimulationConfig.SPEED_FACTOR  # Adjust for simulation speed
+        # delta_time /= SimulationConfig.SPEED_FACTOR  # Adjust for simulation speed
 
         # If currently in both-red duration, count down
         if self.both_signals_red_remaining_time > 0.0:
-            self.both_signals_red_remaining_time -= float(delta_time)
+            self.both_signals_red_remaining_time -= delta_time
             if self.both_signals_red_remaining_time <= 0.0:
                 # Time to switch to the post-red states
-                self.vertical_signal.setState(self.post_vertical_state)
-                self.horizontal_signal.setState(self.post_horizontal_state)
+                self.vertical_signal.setState(self.post_toggle_vertical_state)
+                self.horizontal_signal.setState(self.post_toggle_horizontal_state)
                 # Clear post states
-                self.post_vertical_state = ""
-                self.post_horizontal_state = ""
+                self.post_toggle_vertical_state = ""
+                self.post_toggle_horizontal_state = ""
                 self.both_signals_red_remaining_time = 0.0
             return  # Skip toggling while in both-red duration
 
 
         # Update elapsed time until next toggle
-        self._elapsed += float(delta_time)
+        self.virtual_time_elapsed += delta_time
         # Toggle whenever we cross a multiple of the period
-        while self._elapsed >= self._period:  # Check if 5 seconds have passed
+        while self.virtual_time_elapsed >= self.toggle_interval:  # Check if 15 virtual seconds have passed
             self.toggle_signals()
-            self._elapsed -= self._period  # reset elapsed back to 0
+            self.virtual_time_elapsed -= self.toggle_interval  # reset elapsed back to 0
