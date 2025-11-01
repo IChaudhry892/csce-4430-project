@@ -25,4 +25,8 @@ scenario = Scenario(images)
 handler = ScenarioHandler(scenario, display)
 handler.runSimulation()
 
+# Close pygame
 pygame.quit()
+
+# Display simulation results using matplotlib
+handler.displaySimulationResults()

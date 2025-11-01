@@ -118,3 +118,11 @@ class Scenario:
             if isinstance(component, Road):
                 roads.append(component)
         return roads
+    
+    def getVehicles(self) -> list:
+        """Get all vehicle components in the scenario"""
+        vehicles = []
+        for component in self.components:
+            if isinstance(component, Vehicle):
+                vehicles.append(component)
+        return vehicles
