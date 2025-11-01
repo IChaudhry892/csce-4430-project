@@ -23,7 +23,8 @@ class ScenarioHandler:
         self.real_time = SimulationConfig.REAL_TIME
         self.timer = SimulationConfig.TIMER
         self.frame_count = SimulationConfig.FRAME_COUNT
-        self.stop_real_time = SimulationConfig.STOP_REAL_TIME
+        # self.stop_real_time = SimulationConfig.STOP_REAL_TIME
+        self.stop_virtual_time = SimulationConfig.STOP_VIRTUAL_TIME
         self.speed_factor = SimulationConfig.SPEED_FACTOR
 
         # Metrics for vehicle waiting times
@@ -62,7 +63,8 @@ class ScenarioHandler:
     
     def isTerminated(self) -> bool:
         """Check if the simulation scenario is terminated"""
-        if self.real_time >= self.stop_real_time:
+        # if self.real_time >= self.stop_real_time:
+        if self.timer >= self.stop_virtual_time:
             return True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

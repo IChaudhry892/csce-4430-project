@@ -7,7 +7,8 @@ class SimulationConfig:
     REAL_TIME = 0.0         # Real-time elapsed in seconds
     TIMER = 0.0             # Virtual time elapsed in seconds
     FRAME_COUNT = 0         # Frame counter
-    STOP_REAL_TIME = 30.0   # Stop simulation after 30 real-time seconds
+    # STOP_REAL_TIME = 30.0   # Stop simulation after 30 real-time seconds
+    STOP_VIRTUAL_TIME = 90.0 # Stop simulation after 90 virtual-time seconds
 
     MIN_GREEN_DURATION = 5.0   # Minimum green signal duration in real-time seconds
     MAX_GREEN_DURATION = 10.0  # Maximum green signal duration in real-time seconds
