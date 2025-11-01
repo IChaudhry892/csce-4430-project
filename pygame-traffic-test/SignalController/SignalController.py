@@ -1,7 +1,6 @@
 from TrafficSignal.TrafficSignal import TrafficSignal
 from SimulationToolbox.Simulatable import Simulatable
 from SimulationToolbox.SimulationConfig import SimulationConfig
-from Road.Road import Road
 
 class SignalController(Simulatable):
     """Simple signal controller that toggles signals every fixed interval.
@@ -19,8 +18,8 @@ class SignalController(Simulatable):
         self.toggle_interval = toggle_interval
         self.both_signals_red_duration = SimulationConfig.BOTH_SIGNALS_RED_DURATION * SimulationConfig.SPEED_FACTOR # 3 virtual seconds
         self.both_signals_red_remaining_time = 0.0
-        self.post_toggle_vertical_state = ""
-        self.post_toggle_horizontal_state = ""
+        self.post_toggle_vertical_state = None
+        self.post_toggle_horizontal_state = None
 
         # Ensure initial states are opposite.
         # If both are the same (e.g., both Red), set vertical Green and horizontal Red by default.
@@ -57,8 +56,6 @@ class SignalController(Simulatable):
         self.both_signals_red_remaining_time = self.both_signals_red_duration
 
     def simulate(self, delta_time: float) -> None:
-        # delta_time /= SimulationConfig.SPEED_FACTOR  # Adjust for simulation speed
-
         # If currently in both-red duration, count down
         if self.both_signals_red_remaining_time > 0.0:
             self.both_signals_red_remaining_time -= delta_time
@@ -69,7 +66,6 @@ class SignalController(Simulatable):
                 # Clear post states
                 self.post_toggle_vertical_state = ""
                 self.post_toggle_horizontal_state = ""
-                self.both_signals_red_remaining_time = 0.0
             return  # Skip toggling while in both-red duration
 
 
@@ -78,7 +74,7 @@ class SignalController(Simulatable):
 
         # Adaptive toggling: prefer using scenario vehicle counts when available.
         # If `scenario` is not set on this controller, fall back to the original fixed-period behavior.
-        if hasattr(self, "scenario") and self.scenario is not None:
+        if self.scenario is not None:
             # Count only vehicles currently stuck at the RED light (i.e., in 'waiting' state)
             red_wait_count = 0
             red_thresh = 0.0
@@ -92,13 +88,11 @@ class SignalController(Simulatable):
                 red_road_id = self.vertical_signal.getRoadID()
                 red_thresh = SimulationConfig.VERTICAL_ROAD_CAR_THRESHOLD
 
-            for component in self.scenario.getComponents():
-                if not isinstance(component, Road):
+            for road_component in self.scenario.getRoads():
+                if road_component.getRoadID() != red_road_id:
                     continue
-                if component.getRoadID() != red_road_id:
-                    continue
-                # component.vehicle_lanes is a dict of lane lists
-                for lane_list in component.vehicle_lanes.values():
+                # road_component.vehicle_lanes is a dict of lane lists
+                for lane_list in road_component.vehicle_lanes.values():
                     for vehicle in lane_list:
                         try:
                             if vehicle.state == SimulationConfig.VEHICLE_STATES["waiting"]:
@@ -126,6 +120,6 @@ class SignalController(Simulatable):
             # else: still within mandatory minimum green, do nothing
         else:
             # Fallback: keep previous fixed-interval behavior when scenario isn't available
-            while self.virtual_time_elapsed >= self.toggle_interval:
+            if self.virtual_time_elapsed >= self.toggle_interval:
                 self.toggle_signals()
-                self.virtual_time_elapsed -= self.toggle_interval
+                self.virtual_time_elapsed = 0.0
