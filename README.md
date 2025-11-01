@@ -10,28 +10,40 @@
 
 ## Running the Pygame Traffic Test
 
-1. Make sure you have Python 3 and `pygame` installed:
+1. Make sure you have Python 3 installed:
 
-   You can check if you have Python3 installed by:
+   You can check if you have Python 3 installed by:
    ```sh
    python3 --version
    ```
+   
+2. Install dependencies:
 
-   Install Pygame by:
-   
+   Recommended (cross-platform &mdash; pip):
    ```sh
-   pip install pygame
-   ````
-   
-   If the previous command didn't work, you could also try:
-   
-   ```sh
-   sudo apt install python3-pygame
+   pip install pygame matplotlib
    ```
-   
-3. Navigate to the `pygame-traffic-test` directory:
+   This installs both Pygame and Matplotlib using pip.
+
+   Linux (Debian/Ubuntu) alternative if the pip method doesn't work:
+   ```sh
+   sudo apt update
+   sudo apt install python3-pygame python3-matplotlib
+   ```
+
+3. Clone the repository or download the source code:
+
+   ```sh
+   git clone git@github.com:IChaudhry892/csce-4430-project.git
+   ```
+
+4. Navigate to the `pygame-traffic-test` directory:
+
    ```sh
    cd pygame-traffic-test
-4. Run the test:
+   ```
+
+5. Run the test:
+
    ```sh
    python3 main.py

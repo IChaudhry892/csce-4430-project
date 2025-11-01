@@ -7,6 +7,7 @@ from Vehicle.Vehicle import Vehicle
 from SimulationToolbox.SimulationConfig import SimulationConfig
 
 import pygame
+import matplotlib.pyplot as plt
 import random
 
 class ScenarioHandler:
