@@ -17,6 +17,7 @@ class SimulationConfig:
     BOTH_SIGNALS_RED_DURATION = 1.0  # Duration when both signals are red in real-time seconds
 
     ROAD_IDS = {"Vertical Road": "vertical_road", "Horizontal Road": "horizontal_road"}
-    TRAFFIC_INTENSITIES = {"high": 0.15, "medium": 0.10, "low": 0.05} # Chance of spawning a vehicle per frame per road
+    TRAFFIC_INTENSITIES = {"high": 0.045, "medium": 0.03, "low": 0.015} # Chance of spawning a vehicle per frame per road
+    # 18, 12, 6 vehicles per minute at 20 FPS
     TRAFFIC_SIGNAL_STATES = {"Red": "signal_red", "Green": "signal_green"}
     VEHICLE_STATES = {"moving": "moving", "waiting": "waiting"}
