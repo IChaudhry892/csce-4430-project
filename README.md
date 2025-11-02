@@ -23,7 +23,7 @@
    ```sh
    pip install pygame matplotlib PyQt5
    ```
-   This installs both Pygame, Matplotlib, and PyQt5 using pip.
+   This installs Pygame, Matplotlib, and PyQt5 using pip.
 
    Linux (Debian/Ubuntu) alternative if the pip method doesn't work:
    ```sh
