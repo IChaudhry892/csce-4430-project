@@ -7,8 +7,11 @@ from Vehicle.Vehicle import Vehicle
 from SimulationToolbox.SimulationConfig import SimulationConfig
 
 import pygame
+import matplotlib
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+
 import os
 import random
 
@@ -200,7 +203,7 @@ class ScenarioHandler:
         average_vehicle_wait_time = self.calculateAverageVehicleWaitingTime()
 
         # Plot 1: show number of waiting vehicles over time
-        fig1, ax1 = plt.subplots(figsize=(5, 5))
+        fig1, ax1 = plt.subplots(figsize=(6, 5))
         ax1.plot(self.metrics["times"], self.metrics["vertical_waiting_counts"], label="Vertical Road", color='blue', linewidth=1.5)
         ax1.plot(self.metrics["times"], self.metrics["horizontal_waiting_counts"], label="Horizontal Road", color='red', linewidth=1.5)
         ax1.set_xlabel("Time (virtual seconds)")
@@ -215,7 +218,7 @@ class ScenarioHandler:
         xs = [idx for idx, _ in final_sorted_waits]
         ys = [wt for _, wt in final_sorted_waits]
 
-        fig2, ax2 = plt.subplots(figsize=(5, 5))
+        fig2, ax2 = plt.subplots(figsize=(6, 5))
         ax2.scatter(xs, ys, s=10, color='blue', alpha=0.6)
         ax2.set_xlabel("Vehicle Spawn Index")
         ax2.set_ylabel("Vehicle Waiting Time (virtual seconds)")
