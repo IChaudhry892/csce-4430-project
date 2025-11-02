@@ -20,3 +20,6 @@ class SimulationConfig:
     # 18, 12, 6 vehicles per minute at 20 FPS
     TRAFFIC_SIGNAL_STATES = {"Red": "signal_red", "Green": "signal_green"}
     VEHICLE_STATES = {"moving": "moving", "waiting": "waiting"}
+
+    Y_AXIS_WAITING_VEHICLES_MAX = 14  # Max y-axis limit for waiting vehicles plot
+    Y_AXIS_VEHICLE_WAIT_TIME_MAX = 40   # Max y-axis limit for vehicle wait time plot

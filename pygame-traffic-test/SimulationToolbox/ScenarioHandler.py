@@ -225,6 +225,8 @@ class ScenarioHandler:
         ax1.set_title(f"Waiting Vehicles Over Time (Avg Total: {average_waiting_vehicles:.2f})")
         ax1.grid(True, alpha=0.3)
         ax1.legend()
+        ax1.set_ylim(0, SimulationConfig.Y_AXIS_WAITING_VEHICLES_MAX)
+        ax1.set_yticks(range(0, SimulationConfig.Y_AXIS_WAITING_VEHICLES_MAX + 1, 2))
         fig1.tight_layout()
 
         # Plot 2: show waiting time per vehicle spawn index
@@ -240,6 +242,8 @@ class ScenarioHandler:
         # Add horizontal mean line
         ax2.axhline(y=average_vehicle_wait_time, color='red', linestyle='--', label='Average Waiting Time')
         ax2.legend()
+        ax2.set_ylim(0, SimulationConfig.Y_AXIS_VEHICLE_WAIT_TIME_MAX)
+        ax2.set_yticks(range(0, SimulationConfig.Y_AXIS_VEHICLE_WAIT_TIME_MAX + 1, 5))
         ax2.grid(True, alpha=0.3)
         fig2.tight_layout()
 
