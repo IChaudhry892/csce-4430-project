@@ -278,7 +278,6 @@ class ScenarioHandler:
         fig3.savefig("final_simulation_frame_display.png")
         
         plt.show(block=True)
-        input("Press Enter to continue...")
         
         # Clean up matplotlib to prevent crash on exit
         print("All plots closed. Cleaning up...")
