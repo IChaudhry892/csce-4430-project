@@ -21,14 +21,14 @@
 
    Recommended (cross-platform &mdash; pip):
    ```sh
-   pip install pygame matplotlib
+   pip install pygame matplotlib PyQt5
    ```
-   This installs both Pygame and Matplotlib using pip.
+   This installs both Pygame, Matplotlib, and PyQt5 using pip.
 
    Linux (Debian/Ubuntu) alternative if the pip method doesn't work:
    ```sh
    sudo apt update
-   sudo apt install python3-pygame python3-matplotlib
+   sudo apt install python3-pygame python3-matplotlib python3-pyqt5
    ```
 
 3. Clone the repository or download the source code:
