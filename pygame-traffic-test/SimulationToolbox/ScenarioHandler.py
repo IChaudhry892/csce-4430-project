@@ -182,11 +182,21 @@ class ScenarioHandler:
                 del self.metrics["vehicle_wait_map"][vehicle_id]
                 del self.metrics["vehicle_spawn_index"][vehicle_id]
 
-    def calculateAverageWaitingVehicles(self) -> float:
+    def calculateTotalAverageWaitingVehicles(self) -> float:
         """Calculate the average number of waiting vehicles over the entire simulation run"""
         if self.metrics["total_virtual_time"] == 0.0:
             return 0.0
         return self.metrics["integral_waiting"] / self.metrics["total_virtual_time"]
+    
+    def calculateVerticalAverageWaitingVehicles(self) -> float:
+        if not self.metrics["vertical_waiting_counts"]:
+            return 0.0
+        return sum(self.metrics["vertical_waiting_counts"]) / len(self.metrics["vertical_waiting_counts"])
+
+    def calculateHorizontalAverageWaitingVehicles(self) -> float:
+        if not self.metrics["horizontal_waiting_counts"]:
+            return 0.0
+        return sum(self.metrics["horizontal_waiting_counts"]) / len(self.metrics["horizontal_waiting_counts"])
 
     def calculateAverageVehicleWaitingTime(self) -> float:
         """Calculate the average waiting time of all vehicles in the scenario"""
@@ -197,13 +207,19 @@ class ScenarioHandler:
     
     def createSimulationResultPlots(self) -> None:
         """Create plots for simulation results using matplotlib"""
-        average_waiting_vehicles = self.calculateAverageWaitingVehicles()
+        average_waiting_vehicles = self.calculateTotalAverageWaitingVehicles()
         average_vehicle_wait_time = self.calculateAverageVehicleWaitingTime()
+
+        vertical_average_waiting_vehicles = self.calculateVerticalAverageWaitingVehicles()
+        horizontal_average_waiting_vehicles = self.calculateHorizontalAverageWaitingVehicles()
 
         # Plot 1: show number of waiting vehicles over time
         fig1, ax1 = plt.subplots(figsize=(6, 5))
         ax1.plot(self.metrics["times"], self.metrics["vertical_waiting_counts"], label="Vertical Road", color='blue', linewidth=1.5)
         ax1.plot(self.metrics["times"], self.metrics["horizontal_waiting_counts"], label="Horizontal Road", color='red', linewidth=1.5)
+        # Add horizontal mean lines
+        ax1.axhline(y=vertical_average_waiting_vehicles, color='blue', linestyle='--', linewidth=1.2, alpha=0.7, label=f'Vertical Road Avg = {vertical_average_waiting_vehicles:.2f}')
+        ax1.axhline(y=horizontal_average_waiting_vehicles, color='red', linestyle='--', linewidth=1.2, alpha=0.7, label=f'Horizontal Road Avg = {horizontal_average_waiting_vehicles:.2f}')
         ax1.set_xlabel("Time (virtual seconds)")
         ax1.set_ylabel("Number of Waiting Vehicles")
         ax1.set_title(f"Waiting Vehicles Over Time (Avg Total: {average_waiting_vehicles:.2f})")
@@ -221,6 +237,9 @@ class ScenarioHandler:
         ax2.set_xlabel("Vehicle Spawn Index")
         ax2.set_ylabel("Vehicle Waiting Time (virtual seconds)")
         ax2.set_title(f"Vehicle Waiting Time by Spawn Index (Avg: {average_vehicle_wait_time:.2f} virtual seconds)")
+        # Add horizontal mean line
+        ax2.axhline(y=average_vehicle_wait_time, color='red', linestyle='--', label='Average Waiting Time')
+        ax2.legend()
         ax2.grid(True, alpha=0.3)
         fig2.tight_layout()
 
@@ -250,9 +269,9 @@ class ScenarioHandler:
         print("="*50 + "\n")
 
         # FOR TESTING: Save 3 plots as png files
-        # self.fig1.savefig("waiting_vehicles_over_time.png")
-        # self.fig2.savefig("vehicle_waiting_time_by_spawn_index.png")
-        # fig3.savefig("final_simulation_frame_display.png")
+        self.fig1.savefig("waiting_vehicles_over_time.png")
+        self.fig2.savefig("vehicle_waiting_time_by_spawn_index.png")
+        fig3.savefig("final_simulation_frame_display.png")
         
         plt.show(block=True)
         input("Press Enter to continue...")
