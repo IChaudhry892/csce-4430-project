@@ -41,7 +41,7 @@ class Scenario:
         """Abstract method to be implemented by subclass (probably Main)""" # nvm, using it in scenarioHandler right now
         ROAD_VERTICAL = Road(0, 0, SimulationGraphicConfig.ROAD_VERTICAL_LENGTH, SimulationConfig.TRAFFIC_INTENSITIES["high"], SimulationConfig.ROAD_IDS["Vertical Road"], self.images['road_vertical'])
         self.addComponent(ROAD_VERTICAL)
-        ROAD_HORIZONTAL = Road(0, 0, SimulationGraphicConfig.ROAD_HORIZONTAL_LENGTH, SimulationConfig.TRAFFIC_INTENSITIES["low"], SimulationConfig.ROAD_IDS["Horizontal Road"], self.images['road_horizontal'])
+        ROAD_HORIZONTAL = Road(0, 0, SimulationGraphicConfig.ROAD_HORIZONTAL_LENGTH, SimulationConfig.TRAFFIC_INTENSITIES["high"], SimulationConfig.ROAD_IDS["Horizontal Road"], self.images['road_horizontal'])
         self.addComponent(ROAD_HORIZONTAL)
         INTERSECTION = Intersection(0, 0, self.images['intersection'])
         self.addComponent(INTERSECTION)

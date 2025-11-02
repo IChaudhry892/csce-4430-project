@@ -107,14 +107,14 @@ class SignalController(Simulatable):
 
             # Force toggle if we've reached the absolute maximum green duration
             if self.virtual_time_elapsed >= max_green:
-                print(f"Max green reached, toggling signals: red_wait_count={red_wait_count}")
+                print(f"\nMAX GREEN REACHED, TOGGLING SIGNALS: red_wait_count={red_wait_count}, time_elapsed={self.virtual_time_elapsed}\n")
                 self.toggle_signals()
                 self.virtual_time_elapsed = 0.0
             # If we've reached the minimum green, decide based on red-queue length
             elif self.virtual_time_elapsed >= min_green:
                 # Switch when the red side has more waiting vehicles than its threshold
                 if red_wait_count > red_thresh:
-                    print(f"Toggling signals due to red queue: red_wait_count={red_wait_count}")
+                    print(f"\nTOGGLING SIGNALS DUE TO RED QUEUE: red_wait_count={red_wait_count}, time_elapsed={self.virtual_time_elapsed}\n")
                     self.toggle_signals()
                     self.virtual_time_elapsed = 0.0
             # else: still within mandatory minimum green, do nothing

@@ -26,7 +26,6 @@ class ScenarioHandler:
         self.real_time = SimulationConfig.REAL_TIME
         self.timer = SimulationConfig.TIMER
         self.frame_count = SimulationConfig.FRAME_COUNT
-        # self.stop_real_time = SimulationConfig.STOP_REAL_TIME
         self.stop_virtual_time = SimulationConfig.STOP_VIRTUAL_TIME
         self.speed_factor = SimulationConfig.SPEED_FACTOR
 
@@ -66,7 +65,6 @@ class ScenarioHandler:
     
     def isTerminated(self) -> bool:
         """Check if the simulation scenario is terminated"""
-        # if self.real_time >= self.stop_real_time:
         if self.timer >= self.stop_virtual_time:
             return True
         for event in pygame.event.get():
@@ -250,6 +248,11 @@ class ScenarioHandler:
         print("Displaying simulation results.")
         print("Close all plot windows to exit the program.")
         print("="*50 + "\n")
+
+        # FOR TESTING: Save 3 plots as png files
+        # self.fig1.savefig("waiting_vehicles_over_time.png")
+        # self.fig2.savefig("vehicle_waiting_time_by_spawn_index.png")
+        # fig3.savefig("final_simulation_frame_display.png")
         
         plt.show(block=True)
         input("Press Enter to continue...")
