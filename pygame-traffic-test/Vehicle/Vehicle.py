@@ -119,6 +119,17 @@ class Vehicle(Animatable, Simulatable):
         """Handle vehicle behavior when the traffic signal is red"""
         if self.road_id == "vertical_road":
             next_frame_y = self.y - distance_pixels
+            # Predictive clamp behind the nearest ahead vehicle regardless of its state.
+            ahead = self.get_nearest_ahead_vehicle()
+            if ahead is not None:
+                min_gap_px = SimulationGraphicConfig.VEHICLE_MIN_GAP_METERS * SimulationConfig.PIXELS_PER_METER
+                # Vehicle ahead's back bumper position plus minimum gap defines the furthest forward we can be (largest y)
+                allowed_min_y = ahead.y + ahead.height + min_gap_px
+                # If our next step would violate the gap, clamp and wait
+                if next_frame_y < allowed_min_y:
+                    self.y = allowed_min_y
+                    self.state = SimulationConfig.VEHICLE_STATES["waiting"]
+                    return
             if self.should_stop_at_signal(next_frame_y):
                 self.y = self.stop_line_position
                 self.state = SimulationConfig.VEHICLE_STATES["waiting"]
@@ -131,6 +142,15 @@ class Vehicle(Animatable, Simulatable):
                 self.check_ahead_vehicle_gap(gap)
         elif self.road_id == "horizontal_road":
             next_frame_x = self.x - distance_pixels
+            # Predictive clamp behind the nearest ahead vehicle regardless of its state.
+            ahead = self.get_nearest_ahead_vehicle()
+            if ahead is not None:
+                min_gap_px = SimulationGraphicConfig.VEHICLE_MIN_GAP_METERS * SimulationConfig.PIXELS_PER_METER
+                allowed_min_x = ahead.x + ahead.width + min_gap_px
+                if next_frame_x < allowed_min_x:
+                    self.x = allowed_min_x
+                    self.state = SimulationConfig.VEHICLE_STATES["waiting"]
+                    return
             if self.should_stop_at_signal(next_frame_x):
                 self.x = self.stop_line_position
                 self.state = SimulationConfig.VEHICLE_STATES["waiting"]

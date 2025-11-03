@@ -57,7 +57,7 @@ class SimulationGraphicConfig:
         "horizontal_road": SCREEN_WIDTH // 2 + (ROAD_WIDTH // 2)
     }
     VEHICLE_SPAWN_GAP_METERS = 0  # Minimum gap between spawned vehicles in meters
-    VEHICLE_MIN_GAP_METERS = 1    # Minimum gap between vehicles while moving in meters
+    VEHICLE_MIN_GAP_METERS = 0.5    # Minimum gap between vehicles while moving in meters
 
     # Traffic Signal Constants
     TRAFFIC_SIGNAL_WIDTH = 80
